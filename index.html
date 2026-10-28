@@ -217,18 +217,6 @@
         body.chat-open { overflow: hidden; } /* Trava o fundo */
         body.chat-open .mobile-content { overflow: hidden; } 
 
-        .mobile-chat-modal { 
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-            background: var(--card-bg); display: none; flex-direction: column; 
-            z-index: 300; overflow: hidden; /* Evita scroll na janela toda */
-        }
-        .mobile-chat-modal.active { display: flex; }
-        
-        .mobile-chat-messages { 
-            flex: 1; overflow-y: auto; padding: 20px; background: var(--chat-bg); 
-            display: flex; flex-direction: column; gap: 10px; 
-        }
-
         /* =========================================
            EMULADOR DE CELULAR (APENAS NO PC)
            ========================================= */
@@ -278,48 +266,65 @@
             body:not(.logged-in) .mobile-content > div,
             body:not(.logged-in) .mobile-bottom-nav { display: none !important; }
             body:not(.logged-in) .mobile-wrapper { background: var(--primary); }
-
-            /* =========================================
-               O SEGREDO DO BOTÃO DE ENVIAR (FIX 100%)
-               ========================================= */
-            .mobile-chat-modal {
-                position: fixed; 
-                top: 0; 
-                left: 0; 
-                width: 100vw; 
-                height: 100dvh; /* dvh ajusta automaticamente o tamanho da tela visível ignorando a barra do navegador */
-                z-index: 999999;
-            }
-            
-            /* O INPUT FLUTUANTE NO FUNDO */
-            .chat-modal-input {
-                padding: 15px;
-                padding-bottom: 30px;
-                background: var(--secondary);
-                display: flex;
-                gap: 10px;
-                flex-shrink: 0;
-            }
-            
-            /* AQUI ESTÁ A MÁGICA DO BOTÃO FLUTUANTE */
-            .send-btn-mobile {
-                display: flex !important;
-                align-items: center;
-                justify-content: center;
-                width: 50px;
-                height: 50px;
-                border-radius: 50%;
-                background-color: var(--primary);
-                color: white;
-                border: none;
-                position: fixed;
-                right: 20px;
-                bottom: 100px; /* Fica 100px acima do fundo da tela, garantido que apareça */
-                z-index: 9999999;
-                font-size: 1.5rem;
-                box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            }
         }
+
+        /* =========================================
+           CHAT MOBILE (COMPARTILHADO - EMULADOR E REAL)
+           ========================================= */
+        .mobile-chat-modal { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            background: var(--card-bg); display: none; flex-direction: column; 
+            z-index: 300; overflow: hidden;
+        }
+        .mobile-chat-modal.active { display: flex; }
+
+        /* Cabeçalho do chat com a SETA à esquerda */
+        .mobile-chat-header {
+            background: var(--primary); color: white; 
+            padding: 18px 15px; 
+            display: flex; align-items: center; gap: 12px;
+            flex-shrink: 0;
+        }
+        .mobile-chat-header .back-btn {
+            background: none; border: none; color: white;
+            font-size: 1.6rem; cursor: pointer; 
+            display: flex; align-items: center; justify-content: center;
+            padding: 0; width: 32px; height: 32px; line-height: 1;
+        }
+        .mobile-chat-header-info { display: flex; flex-direction: column; }
+        .mobile-chat-header-info h3 { color: white; margin: 0; font-size: 1.05rem; font-weight: 700; }
+        .mobile-chat-header-info p { font-size: 0.75rem; opacity: 0.85; margin: 0; }
+
+        .mobile-chat-messages { 
+            flex: 1; overflow-y: auto; padding: 18px; background: var(--chat-bg); 
+            display: flex; flex-direction: column; gap: 10px; 
+        }
+
+        /* Barra de input com botão de enviar DENTRO (não mais flutuante) */
+        .mobile-chat-input-bar {
+            padding: 12px 15px;
+            padding-bottom: 20px;
+            background: var(--secondary);
+            display: flex; gap: 10px; align-items: center;
+            flex-shrink: 0;
+            border-top: 1px solid var(--border-color);
+        }
+        .mobile-chat-input-bar input {
+            flex: 1; padding: 12px 18px;
+            border: 1px solid var(--border-color); border-radius: 25px;
+            outline: none; font-size: 0.9rem;
+            background: var(--card-bg); color: var(--text-dark);
+        }
+        .mobile-chat-input-bar button.send-btn {
+            width: 46px; height: 46px; border-radius: 50%;
+            background: var(--primary); color: white;
+            border: none; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; flex-shrink: 0;
+            transition: transform 0.15s, filter 0.15s;
+        }
+        .mobile-chat-input-bar button.send-btn:hover { filter: brightness(1.1); transform: scale(1.05); }
+        .mobile-chat-input-bar button.send-btn:active { transform: scale(0.95); }
 
         /* ESTILOS COMPARTILHADOS MOBILE (Funciona no emulador e no celular real) */
         .mobile-header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
@@ -816,30 +821,25 @@
                     <button class="btn btn-outline" style="margin-top: 15px; padding: 10px;" onclick="resetMobileForm()">Nova Sugestão</button>
                 </div>
             </div>
-
-            <!-- CHAT PRIVADO MOBILE -->
-            <div id="mobile-chat-modal" class="mobile-chat-modal">
-                <div class="chat-modal-header" style="border-radius: 0; padding: 20px;">
-                    <div style="display: flex; align-items: center; gap: 15px;">
-                        <!-- SETA DE VOLTAR AQUI -->
-                        <button onclick="closeMobileChatModal()" style="background: none; border: none; color: white; font-size: 1.8rem; cursor: pointer; padding: 0 10px;">←</button>
-                        <div>
-                            <h3 id="mobile-chat-name" style="color: white; margin: 0; font-size: 1.1rem;">Nome</h3>
-                            <p id="mobile-chat-course" style="font-size: 0.8rem; opacity: 0.8;">Curso</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="mobile-chat-messages" id="mobile-chat-messages"></div>
-                
-                <!-- BARRA DE INPUT APENAS COM O CAMPO DE TEXTO -->
-                <div class="chat-modal-input" style="padding-bottom: 30px;">
-                    <input type="text" id="mobile-chat-input" placeholder="Digite..." onkeypress="handleMobileChatEnter(event)">
-                </div>
-                
-                <!-- BOTÃO DE ENVIAR FLUTUANTE (FORA DO INPUT) -->
-                <button class="send-btn-mobile" onclick="sendMobileChatMessage()">➤</button>
-            </div>
         </main>
+
+        <!-- CHAT PRIVADO MOBILE - FORA DO <main> -->
+        <div id="mobile-chat-modal" class="mobile-chat-modal">
+            <div class="mobile-chat-header">
+                <button class="back-btn" onclick="closeMobileChatModal()" aria-label="Voltar">←</button>
+                <div class="mobile-chat-header-info">
+                    <h3 id="mobile-chat-name">Nome</h3>
+                    <p id="mobile-chat-course">Curso</p>
+                </div>
+            </div>
+            
+            <div class="mobile-chat-messages" id="mobile-chat-messages"></div>
+            
+            <div class="mobile-chat-input-bar">
+                <input type="text" id="mobile-chat-input" placeholder="Digite uma mensagem..." onkeypress="handleMobileChatEnter(event)">
+                <button class="send-btn" onclick="sendMobileChatMessage()" aria-label="Enviar">➤</button>
+            </div>
+        </div>
 
         <nav class="mobile-bottom-nav" id="mobile-app-nav">
             <a class="mobile-nav-item active" onclick="switchMobileTab('campus', this)">
@@ -902,6 +902,7 @@
         const cursosList = ["Administração", "Arquitetura e Urbanismo", "Biomedicina", "Direito", "Educação Física", "Enfermagem", "Engenharia Civil", "Farmácia", "Fisioterapia", "Fonoaudiologia", "Medicina", "Medicina Veterinária", "Nutrição", "Odontologia", "Psicologia", "Terapia Ocupacional", "Radiologia", "Análise e Desenvolvimento de Sistemas", "Letras", "Pedagogia", "Outro Curso"];
         
         let isLoggedIn = userProfile ? true : false;
+        let chatTimer = null; // Para controlar o delay da resposta da Juliana
 
         // --- INICIALIZAÇÃO DO SISTEMA ---
         function initSystem() {
@@ -1139,7 +1140,6 @@
 
         function deletarPost(id) {
             if(confirm("Tem certeza que deseja apagar esta publicação?")) {
-                // Converte o ID para string para garantir que a comparação funcione
                 feedPosts = feedPosts.filter(post => post.id.toString() !== id.toString());
                 localStorage.setItem('campusFeed_' + dbVersion, JSON.stringify(feedPosts));
                 renderFeed();
@@ -1153,7 +1153,6 @@
         function saveUserAndLogin(nome, curso, periodo, lembrar) {
             userProfile = { nome: nome, curso: curso, periodo: periodo, foto: "" };
             
-            // Se marcou "Lembrar", salva no localStorage. Se não, salva só no sessionStorage (apaga ao fechar o navegador).
             if (lembrar) {
                 localStorage.setItem('campusUser', JSON.stringify(userProfile));
                 sessionStorage.removeItem('campusUser');
@@ -1238,6 +1237,63 @@
             document.querySelector('.mobile-content').scrollTop = 0;
         }
 
+        // =========================================
+        // ROBÔ SIMULADOR DA JULIANA
+        // =========================================
+        function julianaResponder(msgUsuario, containerMessages) {
+            const msg = msgUsuario.toLowerCase().trim();
+            let resposta = "";
+
+            // Lógica de palavras-chave
+            if (msg.includes("oi") || msg.includes("olá") || msg.includes("ola") || msg.includes("eae") || msg.includes("e ai")) {
+                resposta = "Oii! Tudo bem sim, e você? 😊";
+            } else if (msg.includes("tudo bem") || msg.includes("tudo bom") || msg.includes("como vai") || msg.includes("td bem")) {
+                resposta = "Tudo ótimo! Só esperando a aula começar. E aí, pronto pra hoje?";
+            } else if (msg.includes("biblioteca") || msg.includes("estudar") || msg.includes("prova") || msg.includes("trabalho")) {
+                resposta = "Eu tô indo pra biblioteca daqui a pouco! Se quiser, podemos estudar juntos.";
+            } else if (msg.includes("campus") || msg.includes("faculdade") || msg.includes("aula") || msg.includes("unifip")) {
+                resposta = "Pois é, o campus hoje tá bem movimentado! Você tem aula em qual bloco?";
+            } else if (msg.includes("café") || msg.includes("comer") || msg.includes("lanche") || msg.includes("fome")) {
+                resposta = "Tô morrendo de fome! Bora no Shortbread pegar um café depois?";
+            } else if (msg.includes("oi, td bem") || msg.includes("oi tudo bem") || msg.includes("oi, tudo bem")) {
+                resposta = "Oii! Tudo bem sim! E com você?";
+            } else if (msg.includes("tchau") || msg.includes("até") || msg.includes("ate") || msg.includes("falou") || msg.includes("flw")) {
+                resposta = "Falou! Até mais tarde no campus 👋";
+            } else if (msg.includes("sim") || msg.includes("claro") || msg.includes("bora") || msg.includes("vamos")) {
+                resposta = "Boa! Então combinado. Me avisa quando estiver por aí!";
+            } else if (msg.includes("não") || msg.includes("nao") || msg.includes("acho que não")) {
+                resposta = "Tudo bem! Se mudar de ideia, só me chamar. 😉";
+            } else if (msg.includes("obrigado") || msg.includes("obrigada") || msg.includes("valeu") || msg.includes("vlw")) {
+                resposta = "Imagina! Precisando, tamo aí. 😊";
+            } else if (msg.includes("nome") || msg.includes("quem é você") || msg.includes("quem e voce")) {
+                resposta = "Sou a Juliana, do curso de Enfermagem! Prazer!";
+            } else {
+                // Respostas neutras para o que não entender
+                const neutras = [
+                    "Entendi! Me conta mais sobre isso...",
+                    "Hmm, interessante. E aí, o que mais?",
+                    "Legal! Eu também tava pensando nisso.",
+                    "Sério? Não sabia disso não!",
+                    "Ah, sim! Faz sentido."
+                ];
+                resposta = neutras[Math.floor(Math.random() * neutras.length)];
+            }
+
+            // Mostra "Digitando..." por 1.2 segundos
+            const typingId = 'typing-' + Date.now();
+            containerMessages.innerHTML += `<div class="message other" id="${typingId}" style="opacity: 0.6; font-style: italic;">digitando...</div>`;
+            containerMessages.scrollTop = containerMessages.scrollHeight;
+
+            // Remove "digitando" e adiciona a resposta real
+            clearTimeout(chatTimer);
+            chatTimer = setTimeout(() => {
+                const typingEl = document.getElementById(typingId);
+                if (typingEl) typingEl.remove();
+                containerMessages.innerHTML += `<div class="message other">${resposta}</div>`;
+                containerMessages.scrollTop = containerMessages.scrollHeight;
+            }, 1200);
+        }
+
         // --- CHAT PRIVADO (DESKTOP) ---
         function openChatModal(nome, curso) {
             if(nome === userProfile.nome) return alert("Você não pode conversar consigo mesmo.");
@@ -1251,8 +1307,11 @@
             const input = document.getElementById('chat-input');
             if (input.value.trim() !== '') {
                 const c = document.getElementById('chat-messages-container');
-                c.innerHTML += `<div class="message me">${input.value}</div>`;
-                input.value = ''; c.scrollTop = c.scrollHeight;
+                const msg = input.value;
+                c.innerHTML += `<div class="message me">${msg}</div>`;
+                input.value = ''; 
+                c.scrollTop = c.scrollHeight;
+                julianaResponder(msg, c);
             }
         }
         function handleChatEnter(e) { if (e.key === 'Enter') sendChatMessage(); }
@@ -1264,20 +1323,23 @@
             document.getElementById('mobile-chat-course').innerText = curso;
             document.getElementById('mobile-chat-messages').innerHTML = `<div class="message other">Oi! Vi seu post no mural. Tudo bem?</div>`;
             
-            // AQUI ESTÁ A TRAVA DO SCROLL
             document.body.classList.add('chat-open'); 
             document.getElementById('mobile-chat-modal').classList.add('active');
         }
         function closeMobileChatModal() { 
             document.body.classList.remove('chat-open');
             document.getElementById('mobile-chat-modal').classList.remove('active'); 
+            clearTimeout(chatTimer); // Cancela qualquer resposta pendente
         }
         function sendMobileChatMessage() {
             const input = document.getElementById('mobile-chat-input');
             if (input.value.trim() !== '') {
                 const c = document.getElementById('mobile-chat-messages');
-                c.innerHTML += `<div class="message me">${input.value}</div>`;
-                input.value = ''; c.scrollTop = c.scrollHeight;
+                const msg = input.value;
+                c.innerHTML += `<div class="message me">${msg}</div>`;
+                input.value = ''; 
+                c.scrollTop = c.scrollHeight;
+                julianaResponder(msg, c);
             }
         }
         function handleMobileChatEnter(e) { if (e.key === 'Enter') sendMobileChatMessage(); }
@@ -1295,4 +1357,3 @@
     </script>
 </body>
 </html>
-```

@@ -121,7 +121,7 @@
         .theme-toggle-btn:hover { transform: scale(1.05); background-color: var(--secondary); }
 
         .content-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; position: relative; z-index: 2; }
-        .card { background-color: var(--card-bg); border-radius: 16px; padding: 24px; box-shadow: var(--shadow); border: 1px solid var(--border-color); border-left: 5px solid var(--primary); transition: transform 0.2s, box-shadow 0.2s, background-color 0.3s; }
+        .card { background-color: var(--card-bg); border-radius: 16px; padding: 24px; box-shadow: var(--shadow); border: 1px solid var(--border-color); border-left: 5px solid var(--primary); transition: transform 0.2s, box-shadow 0.2s, background-color 0.3s; display: flex; flex-direction: column; }
         .card:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(0,0,0,0.1); }
         .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
         .card-title { font-size: 1.15rem; font-weight: 700; color: var(--text-dark); }
@@ -135,7 +135,7 @@
         .status-open { background-color: var(--green-bg); color: var(--green); }
         .status-closed { background-color: var(--gray-bg); color: var(--gray); }
 
-        .btn { display: inline-block; padding: 12px 20px; background-color: var(--primary); color: white; text-align: center; border: none; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; text-decoration: none; width: 100%; transition: all 0.2s; }
+        .btn { display: inline-block; padding: 12px 20px; background-color: var(--primary); color: white; text-align: center; border: none; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; text-decoration: none; width: 100%; transition: all 0.2s; margin-top: auto; }
         .btn:hover { background-color: var(--primary); filter: brightness(1.2); transform: translateY(-1px); }
         .btn-outline { background-color: transparent; color: var(--primary); border: 2px solid var(--primary); }
         .btn-outline:hover { background-color: var(--primary-light); }
@@ -596,21 +596,29 @@
                 <div class="card" style="padding: 18px; margin-bottom: 15px;">
                     <div class="card-header"><span class="card-title">Shortbread (Cafeteria)</span><span class="status-badge status-open">Aberto</span></div>
                     <div class="card-subtitle" style="font-size: 0.8rem;">Dentro do Campus • Café e Cookies</div>
+                    <div class="tags"><span class="tag destaque">Café e Cookies</span><span class="tag">Climatizado ❄️</span></div>
+                    <p style="font-size: 0.8rem; color: var(--text-light); margin-top: 10px; line-height: 1.4;">Perfeito para um café da manhã rápido antes da aula. Vende cafés especiais, cookies, salgados e doces.</p>
                 </div>
                 
                 <div class="card" style="padding: 18px; margin-bottom: 15px;">
                     <div class="card-header"><span class="card-title">Uniflash (Quiosque)</span><span class="status-badge status-open">24h</span></div>
                     <div class="card-subtitle" style="font-size: 0.8rem;">Dentro do Campus • Autoatendimento</div>
+                    <div class="tags"><span class="tag destaque">Reconhecimento Facial</span><span class="tag">Rápido</span></div>
+                    <p style="font-size: 0.8rem; color: var(--text-light); margin-top: 10px; line-height: 1.4;">Quiosque sem atendentes. Você mesmo pega o que quer (snacks, bebidas) e o pagamento é feito via reconhecimento facial.</p>
                 </div>
                 
                 <div class="card" style="padding: 18px; margin-bottom: 15px;">
                     <div class="card-header"><span class="card-title">Live Academia</span><span class="status-badge status-open">Aberto</span></div>
                     <div class="card-subtitle" style="font-size: 0.8rem;">Dentro do Campus • Academia</div>
+                    <div class="tags"><span class="tag destaque">Academia Premium</span><span class="tag">Musculação</span></div>
+                    <p style="font-size: 0.8rem; color: var(--text-light); margin-top: 10px; line-height: 1.4;">Academia moderna localizada dentro da faculdade. Ótima para quem chega muito cedo e quer treinar antes das aulas.</p>
                 </div>
                 
                 <div class="card" style="padding: 18px; margin-bottom: 15px;">
                     <div class="card-header"><span class="card-title">Biblioteca</span><span class="status-badge status-open">Aberto</span></div>
                     <div class="card-subtitle" style="font-size: 0.8rem;">Bloco A • 07h às 22h</div>
+                    <div class="tags"><span class="tag">Climatizado ❄️</span><span class="tag">Silencioso 🤫</span></div>
+                    <p style="font-size: 0.8rem; color: var(--text-light); margin-top: 10px; line-height: 1.4;">Ambiente mais silencioso do campus, ideal para adiantar os estudos ou ler.</p>
                 </div>
             </div>
 
@@ -618,23 +626,66 @@
             <div id="mobile-arredores" class="mobile-section">
                 <div class="card" style="padding: 18px; margin-bottom: 15px;">
                     <div class="card-header"><span class="card-title">Mirim Lanches</span><span class="status-badge status-open">Aberto</span></div>
-                    <div class="card-subtitle" style="font-size: 0.8rem;">150m • Café da manhã / Lanche</div>
+                    <div class="card-subtitle" style="font-size: 0.8rem;">150m • R. Horácio Nóbrega</div>
+                    <div class="tags"><span class="tag">Alimentação</span><span class="tag">Mesas na calçada</span></div>
+                    <p style="font-size: 0.8rem; color: var(--text-light); margin-top: 10px; margin-bottom: 12px; line-height: 1.4;">Ótimo para tomar um café da manhã rápido ou lanche. Tem mesas externas e costuma abrir cedo.</p>
+                    <a href="https://www.google.com/maps/search/?api=1&query=Mirim+Lanches+Patos+PB" target="_blank" class="btn btn-outline" style="padding: 8px; font-size: 0.8rem; margin-top: 0;">Abrir no Mapa 🗺️</a>
                 </div>
+                
+                <div class="card" style="padding: 18px; margin-bottom: 15px; opacity: 0.8;">
+                    <div class="card-header"><span class="card-title">Cachorro Quente Paulistano</span><span class="status-badge status-closed">Abre 17:30</span></div>
+                    <div class="card-subtitle" style="font-size: 0.8rem;">200m • R. Horácio Nóbrega</div>
+                    <div class="tags"><span class="tag">Fast-food</span><span class="tag">⭐ 4.4</span></div>
+                    <p style="font-size: 0.8rem; color: var(--text-light); margin-top: 10px; margin-bottom: 12px; line-height: 1.4;">Muito famoso na região. Focado em cachorro-quente. Excelente opção para a noite.</p>
+                    <a href="https://www.google.com/maps/search/?api=1&query=Cachorro+Quente+Paulistano+Patos+PB" target="_blank" class="btn btn-outline" style="padding: 8px; font-size: 0.8rem; margin-top: 0;">Abrir no Mapa 🗺️</a>
+                </div>
+
                 <div class="card" style="padding: 18px; margin-bottom: 15px;">
                     <div class="card-header"><span class="card-title">Rei dos Salgados</span><span class="status-badge status-open">Aberto</span></div>
-                    <div class="card-subtitle" style="font-size: 0.8rem;">250m • Salgados rápidos</div>
+                    <div class="card-subtitle" style="font-size: 0.8rem;">250m • R. Horácio Nóbrega</div>
+                    <div class="tags"><span class="tag">Salgados</span><span class="tag">Rápido</span></div>
+                    <p style="font-size: 0.8rem; color: var(--text-light); margin-top: 10px; margin-bottom: 12px; line-height: 1.4;">A melhor opção para um lanche rápido e barato. Salgados assados e fritos.</p>
+                    <a href="https://www.google.com/maps/search/?api=1&query=Rei+dos+Salgados+Patos+PB" target="_blank" class="btn btn-outline" style="padding: 8px; font-size: 0.8rem; margin-top: 0;">Abrir no Mapa 🗺️</a>
                 </div>
+
                 <div class="card" style="padding: 18px; margin-bottom: 15px;">
                     <div class="card-header"><span class="card-title">China Park Prime</span><span class="status-badge status-open">Aberto</span></div>
-                    <div class="card-subtitle" style="font-size: 0.8rem;">300m • Restaurante Chinês</div>
+                    <div class="card-subtitle" style="font-size: 0.8rem;">300m • R. Horácio Nóbrega</div>
+                    <div class="tags"><span class="tag">Restaurante Chinês</span></div>
+                    <p style="font-size: 0.8rem; color: var(--text-light); margin-top: 10px; margin-bottom: 12px; line-height: 1.4;">Restaurante de comida chinesa. Boa opção para o almoço, com pratos variados e buffet.</p>
+                    <a href="https://www.google.com/maps/search/?api=1&query=China+Park+Prime+Patos+PB" target="_blank" class="btn btn-outline" style="padding: 8px; font-size: 0.8rem; margin-top: 0;">Abrir no Mapa 🗺️</a>
                 </div>
-                <div class="card" style="padding: 18px; margin-bottom: 15px; opacity: 0.7;">
-                    <div class="card-header"><span class="card-title">Cachorro Quente Paulistano</span><span class="status-badge status-closed">Abre às 17:30</span></div>
-                    <div class="card-subtitle" style="font-size: 0.8rem;">200m • Hot Dog</div>
+
+                <div class="card" style="padding: 18px; margin-bottom: 15px; opacity: 0.8;">
+                    <div class="card-header"><span class="card-title">Cheers Empório</span><span class="status-badge status-closed">Abre 18:00</span></div>
+                    <div class="card-subtitle" style="font-size: 0.8rem;">350m • R. Cândido das Laranjeiras</div>
+                    <div class="tags"><span class="tag">Restaurante/Bar</span><span class="tag">⭐ 4.1</span></div>
+                    <p style="font-size: 0.8rem; color: var(--text-light); margin-top: 10px; margin-bottom: 12px; line-height: 1.4;">Localizado bem em frente à UNIFIP. Funciona mais como bar e restaurante à noite.</p>
+                    <a href="https://www.google.com/maps/search/?api=1&query=Cheers+Emporio+Patos+PB" target="_blank" class="btn btn-outline" style="padding: 8px; font-size: 0.8rem; margin-top: 0;">Abrir no Mapa 🗺️</a>
                 </div>
-                <div class="card" style="padding: 18px; margin-bottom: 15px; opacity: 0.7;">
-                    <div class="card-header"><span class="card-title">Cheers Empório</span><span class="status-badge status-closed">Abre às 18h</span></div>
-                    <div class="card-subtitle" style="font-size: 0.8rem;">350m • Bar/Restaurante</div>
+
+                <div class="card" style="padding: 18px; margin-bottom: 15px; opacity: 0.8;">
+                    <div class="card-header"><span class="card-title">Pizza em Casa</span><span class="status-badge status-closed">Abre 18:00</span></div>
+                    <div class="card-subtitle" style="font-size: 0.8rem;">400m • R. Cândido das Laranjeiras</div>
+                    <div class="tags"><span class="tag">Pizzaria</span><span class="tag">⭐ 4.9</span></div>
+                    <p style="font-size: 0.8rem; color: var(--text-light); margin-top: 10px; margin-bottom: 12px; line-height: 1.4;">Pizzaria muito bem avaliada. Uma das melhores opções para o jantar noturno na região.</p>
+                    <a href="https://www.google.com/maps/search/?api=1&query=Pizza+em+Casa+Patos+PB" target="_blank" class="btn btn-outline" style="padding: 8px; font-size: 0.8rem; margin-top: 0;">Abrir no Mapa 🗺️</a>
+                </div>
+
+                <div class="card" style="padding: 18px; margin-bottom: 15px; opacity: 0.8;">
+                    <div class="card-header"><span class="card-title">RI Burguer</span><span class="status-badge status-closed">Abre 17:30</span></div>
+                    <div class="card-subtitle" style="font-size: 0.8rem;">500m • R. Frei Caneca</div>
+                    <div class="tags"><span class="tag">Hamburgueria</span><span class="tag">⭐ 5.0</span></div>
+                    <p style="font-size: 0.8rem; color: var(--text-light); margin-top: 10px; margin-bottom: 12px; line-height: 1.4;">Hamburgueria artesanal. Perfeito se você for ficar no campus até a noite.</p>
+                    <a href="https://www.google.com/maps/search/?api=1&query=RI+Burguer+Patos+PB" target="_blank" class="btn btn-outline" style="padding: 8px; font-size: 0.8rem; margin-top: 0;">Abrir no Mapa 🗺️</a>
+                </div>
+
+                <div class="card" style="padding: 18px; margin-bottom: 15px; opacity: 0.8;">
+                    <div class="card-header"><span class="card-title">Chapa Quente</span><span class="status-badge status-closed">Abre 17:30</span></div>
+                    <div class="card-subtitle" style="font-size: 0.8rem;">600m • Por trás da rodoviária velha</div>
+                    <div class="tags"><span class="tag">Hamburgueria</span><span class="tag">⭐ 4.4</span></div>
+                    <p style="font-size: 0.8rem; color: var(--text-light); margin-top: 10px; margin-bottom: 12px; line-height: 1.4;">Famoso pelos lanches na chapa. Se você estuda à noite, vale a pena provar.</p>
+                    <a href="https://www.google.com/maps/search/?api=1&query=Chapa+Quente+Patos+PB" target="_blank" class="btn btn-outline" style="padding: 8px; font-size: 0.8rem; margin-top: 0;">Abrir no Mapa 🗺️</a>
                 </div>
             </div>
 
@@ -923,7 +974,6 @@
             localStorage.setItem('campusFeed_' + dbVersion, JSON.stringify(feedPosts));
         }
 
-        // RENDERIZAÇÃO DO FEED (USANDO DELEGAÇÃO DE EVENTOS)
         function renderFeed() {
             const containers = [document.getElementById('desktop-feed-container'), document.getElementById('mobile-feed-container')];
             let html = '';

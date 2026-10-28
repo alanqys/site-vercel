@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Conecta - UNIFIP Patos</title>
+    <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzAwNGI4NyI+PHBhdGggZD0iTTEyIDJMMiA3bDEwIDUgMTAtNS0xMC01em0wIDlsMi41LTEuMjVMMTIgOC41bC0yLjUgMS4yNUwxMiAxMXptMCAyLjVsLTUtMi41LTUgMi41TDEyIDIybDEwLTguNS01LTIuNS01IDIuNXoiLz48L3N2Zz4=">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* =========================================
+           RESET E VARIÁVEIS (LIGHT MODE PADRÃO)
+           ========================================= */
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        :root {
+            --primary: #004b87; 
+            --primary-light: #e8f0f8; 
+            --secondary: #f4f6f9;
+            --text-dark: #2c3e50; 
+            --text-light: #7f8c8d; 
+            --bg-color: #eef2f5;
+            --card-bg: #ffffff; 
+            --green: #27ae60; 
+            --green-bg: #eafaf1;
+            --gray: #95a5a6; 
+            --gray-bg: #f0f0f0; 
+            --border-color: #e0e6ed;
+            --shadow: 0 4px 15px rgba(0,0,0,0.05);
+            --chat-bg: #e5ddd5; 
+            --chat-bubble-me: #dcf8c6; 
+            --chat-bubble-other: #ffffff;
+        }
+
+        /* =========================================
+           DARK MODE VARIÁVEIS
+           ========================================= */
+        body.dark-mode {
+            --primary: #4da3ff;
+            --primary-light: #1a3d5c; 
+            --secondary: #2a2a2a;
+            --text-dark: #e0e0e0; 
+            --text-light: #a0a0a0; 
+            --bg-color: #121212;
+            --card-bg: #1e1e1e; 
+            --green: #2ecc71; 
+            --green-bg: #1e3a29;
+            --gray: #7f8c8d; 
+            --gray-bg: #2c2c2c; 
+            --border-color: #333333;
+            --shadow: 0 4px 15px rgba(0,0,0,0.3);
+            --chat-bg: #1a1a1a; 
+            --chat-bubble-me: #005c4b; 
+            --chat-bubble-other: #202c33;
+        }
+
+        body { background-color: var(--bg-color); color: var(--text-dark); height: 100vh; overflow: hidden; display: flex; flex-direction: column; transition: background-color 0.3s, color 0.3s; }
+
+        /* =========================================
+           ONBOARDING (CADASTRO PC)
+           ========================================= */
+        .onboarding-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--primary); display: flex; justify-content: center; align-items: center;
+            z-index: 9999; padding: 20px; transition: all 0.3s;
+        }
+        .onboarding-box {
+            background-color: var(--card-bg); padding: 30px; border-radius: 20px;
+            width: 100%; max-width: 420px; box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            text-align: center; position: relative; z-index: 10000;
+        }
+        .btn-toggle-mobile-onboard {
+            position: absolute; top: -50px; right: 0; background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.5);
+            padding: 8px 15px; border-radius: 20px; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 5px; transition: all 0.2s;
+        }
+        .btn-toggle-mobile-onboard:hover { background: white; color: var(--primary); }
+
+        .onboarding-box h2 { color: var(--primary); margin-bottom: 5px; font-size: 1.4rem; font-weight: 700; }
+        .onboarding-box p { font-size: 0.85rem; color: var(--text-light); margin-bottom: 20px; }
+        
+        .form-group { margin-bottom: 12px; text-align: left; }
+        .form-group label { display: block; font-size: 0.85rem; margin-bottom: 5px; font-weight: 600; color: var(--text-dark); }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%; padding: 10px 12px; border: 1px solid var(--border-color);
+            border-radius: 8px; font-size: 0.9rem; background-color: var(--secondary); outline: none; transition: border 0.2s; color: var(--text-dark);
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--primary); background-color: var(--card-bg); }
+
+        .search-select-container { position: relative; }
+        .search-input { width: 100%; padding: 10px 12px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 0.9rem; background-color: var(--secondary); outline: none; color: var(--text-dark); }
+        .course-dropdown {
+            position: absolute; top: 100%; left: 0; width: 100%; background: var(--card-bg); border: 1px solid var(--border-color);
+            border-radius: 8px; max-height: 200px; overflow-y: auto; z-index: 10000; display: none; box-shadow: 0 10px 20px rgba(0,0,0,0.1); margin-top: 5px;
+        }
+        .course-dropdown.active { display: block; }
+        .course-option { padding: 10px 12px; cursor: pointer; font-size: 0.85rem; border-bottom: 1px solid var(--border-color); text-align: left; color: var(--text-dark); }
+        .course-option:hover { background-color: var(--primary-light); color: var(--primary); }
+
+        /* =========================================
+           LAYOUT GERAL
+           ========================================= */
+        .desktop-wrapper { display: flex; height: 100vh; width: 100%; }
+        .sidebar { width: 260px; background-color: var(--card-bg); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; padding: 20px; z-index: 10; transition: background-color 0.3s;}
+        .logo-area { display: flex; align-items: center; gap: 10px; margin-bottom: 30px; }
+        .logo-area svg { width: 35px; height: 35px; }
+        .logo-area h1 { font-size: 1.3rem; color: var(--primary); font-weight: 700; line-height: 1.1; }
+        
+        .nav-menu { display: flex; flex-direction: column; gap: 8px; }
+        .nav-item-desktop { display: flex; align-items: center; gap: 12px; padding: 12px 15px; border-radius: 8px; cursor: pointer; color: var(--text-light); font-weight: 500; text-decoration: none; transition: all 0.2s; }
+        .nav-item-desktop:hover { background-color: var(--secondary); color: var(--primary); }
+        .nav-item-desktop.active { background-color: var(--primary-light); color: var(--primary); font-weight: 600; }
+
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow-y: auto; padding: 30px 40px; position: relative; z-index: 1; background-color: var(--bg-color); transition: background-color 0.3s; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; position: relative; z-index: 2; }
+        .greeting h2 { font-size: 1.5rem; font-weight: 700; color: var(--primary); }
+        .greeting p { color: var(--text-light); font-size: 0.9rem; margin-top: 4px; font-weight: 500; }
+        
+        .header-actions { display: flex; gap: 15px; align-items: center; }
+        .profile-btn { background-color: var(--card-bg); color: var(--primary); border: 1px solid var(--border-color); width: 42px; height: 42px; border-radius: 50%; cursor: pointer; font-weight: bold; font-size: 1.2rem; display: flex; justify-content: center; align-items: center; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: transform 0.2s; }
+        .profile-btn:hover { transform: scale(1.05); }
+        .profile-btn img { width: 100%; height: 100%; object-fit: cover; }
+
+        .theme-toggle-btn { background-color: var(--card-bg); color: var(--text-dark); border: 1px solid var(--border-color); width: 42px; height: 42px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: all 0.2s; }
+        .theme-toggle-btn:hover { transform: scale(1.05); background-color: var(--secondary); }
+
+        .content-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; position: relative; z-index: 2; }
+        .card { background-color: var(--card-bg); border-radius: 16px; padding: 24px; box-shadow: var(--shadow); border: 1px solid var(--border-color); border-left: 5px solid var(--primary); transition: transform 0.2s, box-shadow 0.2s, background-color 0.3s; }
+        .card:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(0,0,0,0.1); }
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+        .card-title { font-size: 1.15rem; font-weight: 700; color: var(--text-dark); }
+        .card-subtitle { font-size: 0.85rem; color: var(--text-light); margin-bottom: 15px; font-weight: 500; }
+        .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px; }
+        .tag { font-size: 0.75rem; padding: 5px 12px; border-radius: 20px; background-color: var(--primary-light); color: var(--primary); font-weight: 600; }
+        .tag.aviso { background-color: #fff3e0; color: #e65100; }
+        .tag.destaque { background-color: #e8f5e9; color: #2e7d32; }
+        
+        .status-badge { font-size: 0.75rem; padding: 5px 12px; border-radius: 20px; font-weight: 700; letter-spacing: 0.5px;}
+        .status-open { background-color: var(--green-bg); color: var(--green); }
+        .status-closed { background-color: var(--gray-bg); color: var(--gray); }
+
+        .btn { display: inline-block; padding: 12px 20px; background-color: var(--primary); color: white; text-align: center; border: none; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; text-decoration: none; width: 100%; transition: all 0.2s; }
+        .btn:hover { background-color: var(--primary); filter: brightness(1.2); transform: translateY(-1px); }
+        .btn-outline { background-color: transparent; color: var(--primary); border: 2px solid var(--primary); }
+        .btn-outline:hover { background-color: var(--primary-light); }
+        .btn-danger { background-color: #e74c3c; color: white; border: none; }
+        
+        .notice { background-color: #fff8e1; color: #b28704; padding: 16px; border-radius: 12px; font-size: 0.9rem; margin-bottom: 25px; border-left: 5px solid #ffc107; position: relative; z-index: 2; font-weight: 500;}
+        body.dark-mode .notice { background-color: #3e2d0a; color: #f1c40f; border-left-color: #f1c40f; }
+        
+        .desktop-section { display: none; position: relative; z-index: 2; }
+        .desktop-section.active { display: block; animation: fadeIn 0.4s ease-out; }
+
+        /* =========================================
+           FEED E POSTS (REDE SOCIAL)
+           ========================================= */
+        .social-feed { max-width: 650px; margin: 0 auto; position: relative; z-index: 2; }
+        .create-post { background: var(--card-bg); padding: 15px; border-radius: 16px; box-shadow: var(--shadow); margin-bottom: 20px; display: flex; gap: 12px; align-items: center; border: 1px solid var(--border-color);}
+        .create-post input { flex: 1; padding: 14px 20px; border: 1px solid var(--border-color); border-radius: 30px; background: var(--secondary); outline: none; font-size: 0.95rem; color: var(--text-dark);}
+        .post-card { background: var(--card-bg); border-radius: 16px; padding: 24px; margin-bottom: 20px; box-shadow: var(--shadow); border: 1px solid var(--border-color); position: relative; }
+        .post-header { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
+        .post-avatar { width: 48px; height: 48px; border-radius: 50%; background: var(--primary-light); color: var(--primary); display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 1.3rem; overflow: hidden; }
+        .post-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .post-info h4 { font-size: 1.05rem; color: var(--text-dark); font-weight: 700; }
+        .post-info p { font-size: 0.8rem; color: var(--text-light); font-weight: 500;}
+        .post-content { font-size: 0.95rem; color: var(--text-dark); margin-bottom: 18px; line-height: 1.6; }
+        .post-actions { display: flex; justify-content: space-between; border-top: 1px solid var(--border-color); padding-top: 15px; align-items: center; }
+        
+        .action-btn { background: none; border: none; color: var(--text-light); font-weight: 600; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; padding: 8px 15px; border-radius: 8px; transition: background 0.2s; }
+        .action-btn:hover { background: var(--secondary); color: var(--primary); }
+        .action-btn.delete { color: #e74c3c; }
+        .action-btn.delete:hover { background: rgba(231, 76, 60, 0.1); }
+        
+        .comments-section { margin-top: 15px; padding-top: 15px; border-top: 1px dashed var(--border-color); display: none; }
+        .comments-section.active { display: block; }
+        .comment { background: var(--secondary); padding: 12px 15px; border-radius: 12px; margin-bottom: 10px; font-size: 0.9rem; color: var(--text-dark);}
+        .comment strong { color: var(--primary); }
+        .comment-input-area { display: flex; gap: 10px; margin-top: 10px; }
+        .comment-input-area input { flex: 1; padding: 10px 15px; border: 1px solid var(--border-color); border-radius: 20px; outline: none; font-size: 0.9rem; background: var(--card-bg); color: var(--text-dark);}
+        .comment-input-area button { background: var(--primary); color: white; border: none; padding: 0 20px; border-radius: 20px; cursor: pointer; font-size: 0.85rem; font-weight: 600; }
+
+        /* =========================================
+           PERFIL
+           ========================================= */
+        .profile-card { max-width: 600px; background: var(--card-bg); border-radius: 20px; padding: 35px; box-shadow: var(--shadow); position: relative; z-index: 2; border: 1px solid var(--border-color);}
+        .profile-header { display: flex; align-items: center; gap: 25px; margin-bottom: 30px; }
+        
+        .avatar-upload-container { position: relative; width: 90px; height: 90px; cursor: pointer; }
+        .profile-avatar-large { width: 100%; height: 100%; border-radius: 50%; background: var(--primary-light); color: var(--primary); display: flex; justify-content: center; align-items: center; font-size: 2.5rem; font-weight: bold; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1);}
+        .profile-avatar-large img { width: 100%; height: 100%; object-fit: cover; }
+        .avatar-upload-btn { position: absolute; bottom: 0; right: 0; background: var(--primary); color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.3rem; border: 3px solid var(--card-bg); pointer-events: none; }
+
+        .profile-header h2 { font-size: 1.6rem; color: var(--text-dark); font-weight: 700; }
+        .profile-header p { font-size: 0.95rem; color: var(--text-light); font-weight: 500;}
+
+        /* =========================================
+           CHAT MODAL
+           ========================================= */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 10000; backdrop-filter: blur(3px);}
+        .modal-overlay.active { display: flex; }
+        .chat-modal { max-width: 500px; width: 100%; height: 80vh; background: var(--card-bg); border-radius: 20px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.4); }
+        .chat-modal-header { background: var(--primary); color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .chat-modal-messages { flex: 1; overflow-y: auto; padding: 20px; background: var(--chat-bg); display: flex; flex-direction: column; gap: 12px; }
+        .chat-modal-input { padding: 20px; background: var(--secondary); display: flex; gap: 12px; }
+        .chat-modal-input input { flex: 1; padding: 15px 20px; border: none; border-radius: 30px; outline: none; font-size: 0.95rem; box-shadow: inset 0 2px 5px rgba(0,0,0,0.05); background: var(--card-bg); color: var(--text-dark);}
+        .chat-modal-input button { background: var(--primary); color: white; border: none; padding: 0 25px; border-radius: 30px; cursor: pointer; font-weight: bold; }
+        .message { max-width: 80%; padding: 12px 16px; border-radius: 16px; font-size: 0.95rem; line-height: 1.5; box-shadow: 0 1px 2px rgba(0,0,0,0.1);}
+        .message.me { align-self: flex-end; background: var(--chat-bubble-me); border-bottom-right-radius: 4px; color: #000; }
+        .message.other { align-self: flex-start; background: var(--chat-bubble-other); border-bottom-left-radius: 4px; color: var(--text-dark);}
+        body.dark-mode .message.me { color: #fff; }
+
+        /* =========================================
+           MOBILE FIRST & EMULADOR
+           ========================================= */
+        body.mobile-mode { background-color: #121212; align-items: center; justify-content: center; }
+        body.mobile-mode .desktop-wrapper, body.mobile-mode .onboarding-box { display: none; }
+        
+        .mobile-wrapper { display: none; }
+        body.mobile-mode .mobile-wrapper {
+            display: flex; flex-direction: column; width: 375px; height: 812px; background-color: var(--bg-color); border-radius: 40px;
+            box-shadow: 0 0 0 12px #2a2a2a, 0 0 0 15px #555, 0 25px 60px rgba(0,0,0,0.9); overflow: hidden; position: relative; z-index: 99999;
+        }
+
+        .dynamic-island { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); width: 110px; height: 30px; background-color: #000; border-radius: 20px; z-index: 100; }
+        
+        .mobile-header { background-color: var(--primary); color: white; padding: 55px 20px 15px 20px; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; position: relative; z-index: 10; }
+        .mobile-header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+        .mobile-header h1 { font-size: 1.2rem; font-weight: 700; }
+        .mobile-header-actions { display: flex; gap: 10px; align-items: center;}
+        .close-mobile-btn { background: rgba(255,255,255,0.2); border: none; color: white; padding: 6px 12px; border-radius: 12px; cursor: pointer; font-size: 0.75rem; font-weight: 600; }
+        .mobile-profile-btn { background: rgba(255,255,255,0.2); border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; overflow: hidden; display: flex; justify-content: center; align-items: center; color: white; font-weight: bold; }
+        .mobile-profile-btn img { width: 100%; height: 100%; object-fit: cover; }
+        .mobile-header p { font-size: 0.85rem; opacity: 0.9; font-weight: 500; }
+
+        .mobile-theme-toggle-btn { background: rgba(255,255,255,0.2); border: none; color: white; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 1rem; }
+
+        .mobile-content { flex: 1; overflow-y: auto; padding: 15px; padding-bottom: 90px; position: relative; z-index: 1; background-color: var(--bg-color); }
+
+        .mobile-section { display: none; position: relative; z-index: 2; }
+        .mobile-section.active { display: block; animation: fadeIn 0.3s; }
+
+        .mobile-onboarding-full {
+            display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--primary); z-index: 200; padding: 40px 20px; flex-direction: column; align-items: center; justify-content: center;
+        }
+        body.mobile-mode.onboarding-active .mobile-onboarding-full { display: flex; }
+        .mobile-onboarding-full .form-group { width: 100%; }
+        .mobile-onboarding-full .btn { width: 100%; margin-top: 10px; }
+        .mobile-onboarding-full h2 { color: white; margin-bottom: 20px; font-weight: 700; }
+        .mobile-onboarding-full p { color: rgba(255,255,255,0.8); font-size: 0.9rem; margin-bottom: 20px; text-align: center; }
+        .mobile-onboarding-full .search-input { background: white; color: #000; }
+
+        .home-indicator { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); width: 130px; height: 5px; background-color: #000; border-radius: 10px; z-index: 100; opacity: 0.8; }
+        body.dark-mode .home-indicator { background-color: #fff; }
+        .mobile-bottom-nav { position: absolute; bottom: 0; width: 100%; background-color: var(--card-bg); display: flex; justify-content: space-around; padding: 12px 0 25px 0; border-top: 1px solid var(--border-color); z-index: 10; transition: background-color 0.3s;}
+        .mobile-nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-light); font-size: 0.7rem; cursor: pointer; font-weight: 500; }
+        .mobile-nav-item svg { width: 22px; height: 22px; margin-bottom: 4px; fill: currentColor; }
+        .mobile-nav-item.active { color: var(--primary); font-weight: 700; }
+        
+        /* CORREÇÃO DO CHAT MOBILE */
+        .mobile-chat-modal { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            background: var(--card-bg); display: none; flex-direction: column; 
+            z-index: 300; overflow: hidden;
+        }
+        .mobile-chat-modal.active { display: flex; }
+        
+        .mobile-chat-messages {
+            flex: 1; overflow-y: auto; padding: 20px; background: var(--chat-bg); 
+            display: flex; flex-direction: column; gap: 10px;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <!-- ONBOARDING (PC) -->
+    <div class="onboarding-overlay" id="onboarding-screen">
+        <div class="onboarding-box">
+            <button class="btn-toggle-mobile-onboard" onclick="toggleMobileOnboarding()">📱 Visão Mobile</button>
+            <svg viewBox="0 0 24 24" fill="var(--primary)" style="width: 50px; height: 50px; margin-bottom: 10px;"><path d="M12 2L2 7l10 5 10-5-10-5zm0 9l2.5-1.25L12 8.5l-2.5 1.25L12 11zm0 2.5l-5-2.5-5 2.5L12 22l10-8.5-5-2.5-5 2.5z"/></svg>
+            <h2>Campus Conecta</h2>
+            <p>Conecte-se com a UNIFIP Patos.</p>
+            
+            <form id="onboarding-form-pc">
+                <div class="form-group"><label>Seu Nome</label><input type="text" id="pc-nome" placeholder="Ex: Ana Beatriz" required></div>
+                <div class="form-group search-select-container">
+                    <label>Seu Curso</label>
+                    <input type="text" class="search-input" id="pc-curso-search" placeholder="Digite para buscar..." autocomplete="off" required>
+                    <div class="course-dropdown" id="pc-curso-dropdown"></div>
+                    <input type="hidden" id="pc-curso-hidden" required>
+                </div>
+                <div class="form-group"><label>Período</label>
+                    <select id="pc-periodo" required>
+                        <option value="">Selecione...</option>
+                        <option value="1º Período">1º Período</option><option value="2º Período">2º Período</option>
+                        <option value="3º Período">3º Período</option><option value="4º Período">4º Período</option>
+                        <option value="5º Período">5º Período</option><option value="6º Período">6º Período</option>
+                        <option value="7º Período">7º Período</option><option value="8º Período">8º Período</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn" style="margin-top: 15px;">Entrar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- LAYOUT DESKTOP -->
+    <div class="desktop-wrapper">
+        <aside class="sidebar">
+            <div class="logo-area">
+                <svg viewBox="0 0 24 24" fill="var(--primary)"><path d="M12 2L2 7l10 5 10-5-10-5zm0 9l2.5-1.25L12 8.5l-2.5 1.25L12 11zm0 2.5l-5-2.5-5 2.5L12 22l10-8.5-5-2.5-5 2.5z"/></svg>
+                <h1>Campus<br>Conecta</h1>
+            </div>
+            <nav class="nav-menu">
+                <a class="nav-item-desktop active" onclick="switchDesktopTab('campus', this)">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg> No Campus
+                </a>
+                <a class="nav-item-desktop" onclick="switchDesktopTab('arredores', this)">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg> Arredores
+                </a>
+                <a class="nav-item-desktop" onclick="switchDesktopTab('comunidade', this)">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg> Comunidade
+                </a>
+                <a class="nav-item-desktop" onclick="switchDesktopTab('perfil', this)">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg> Meu Perfil
+                </a>
+                <a class="nav-item-desktop" onclick="switchDesktopTab('sugerir', this)">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg> Sugerir
+                </a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <div class="top-bar">
+                <div class="greeting">
+                    <h2 id="desktop-greeting">Bom dia.</h2>
+                    <p id="desktop-subtitle">Bem-vindo ao Campus Conecta.</p>
+                </div>
+                <div class="header-actions">
+                    <button class="theme-toggle-btn" onclick="toggleDarkMode()" id="theme-toggle-pc">🌙</button>
+                    <button class="profile-btn" onclick="switchDesktopTab('perfil', document.querySelectorAll('.nav-item-desktop')[3])" id="desktop-profile-initial">A</button>
+                    <button class="toggle-mobile-btn" style="background: var(--primary); color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 10px rgba(0, 75, 135, 0.3); transition: all 0.2s;" onclick="tryToggleMobile()">📱 Visão Mobile</button>
+                </div>
+            </div>
+
+            <!-- ABA CAMPUS -->
+            <div id="desktop-campus" class="desktop-section active">
+                <div class="notice">⚠️ O Campus Conecta não faz reservas. As informações são atualizadas pela comunidade.</div>
+                <div class="content-grid">
+                    
+                    <div class="card">
+                        <div class="card-header"><span class="card-title">Shortbread (Cafeteria)</span><span class="status-badge status-open">Aberto agora</span></div>
+                        <div class="card-subtitle">Dentro do Campus • Térreo</div>
+                        <div class="tags"><span class="tag destaque">Café e Cookies</span><span class="tag">Climatizado ❄️</span><span class="tag">Wi-Fi 📶</span></div>
+                        <p style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 15px; line-height: 1.5;">Perfeito para um café da manhã rápido antes da aula. Vende cafés especiais, cookies, salgados e doces. Ambiente agradável para esperar.</p>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header"><span class="card-title">Uniflash (Quiosque 24h)</span><span class="status-badge status-open">Aberto 24h</span></div>
+                        <div class="card-subtitle">Dentro do Campus • Próximo à entrada</div>
+                        <div class="tags"><span class="tag destaque">Autoatendimento</span><span class="tag">Reconhecimento Facial</span><span class="tag">Rápido</span></div>
+                        <p style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 15px; line-height: 1.5;">Quiosque sem atendentes. Você mesmo pega o que quer (snacks, bebidas, itens de higiene) e o pagamento é feito via reconhecimento facial. Ideal para quem chega cedo.</p>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header"><span class="card-title">Live Academia</span><span class="status-badge status-open">Aberto agora</span></div>
+                        <div class="card-subtitle">Dentro do Campus • Bloco de Esportes</div>
+                        <div class="tags"><span class="tag destaque">Academia Premium</span><span class="tag">Musculação</span><span class="tag">Cardio</span></div>
+                        <p style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 15px; line-height: 1.5;">Academia moderna localizada dentro da faculdade. Ótima para quem chega muito cedo e quer treinar antes das aulas começarem.</p>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header"><span class="card-title">Biblioteca Central</span><span class="status-badge status-open">Aberto agora</span></div>
+                        <div class="card-subtitle">Bloco A • 07h às 22h</div>
+                        <div class="tags"><span class="tag">Climatizado ❄️</span><span class="tag">Silencioso 🤫</span><span class="tag">Tomadas 🔌</span></div>
+                        <p style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 15px; line-height: 1.5;">Ambiente mais silencioso do campus, ideal para adiantar os estudos ou ler.</p>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header"><span class="card-title">Praça Central / Bancos</span><span class="status-badge status-open">Livre</span></div>
+                        <div class="card-subtitle">Pátio principal</div>
+                        <div class="tags"><span class="tag aviso">Sugerido pela comunidade</span><span class="tag">Ventilação natural</span></div>
+                        <p style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 15px; line-height: 1.5;">Espaço aberto para tomar um ar, conversar ou apenas descansar enquanto espera o horário da aula.</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ABA ARREDORES -->
+            <div id="desktop-arredores" class="desktop-section">
+                <div class="notice">🕒 Mostrando o comércio ao redor do campus (Horário simulado: 07:00).</div>
+                <div class="content-grid">
+                    
+                    <div class="card">
+                        <div class="card-header"><span class="card-title">Mirim Lanches</span><span class="status-badge status-open">Aberto agora</span></div>
+                        <div class="card-subtitle">Aprox. 150m • R. Horácio Nóbrega (BR-110)</div>
+                        <div class="tags"><span class="tag">Alimentação</span><span class="tag">Mesas na calçada</span><span class="tag">Aberto cedo</span></div>
+                        <p style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 15px; line-height: 1.5;">Ótimo para tomar um café da manhã rápido ou lanche. Tem mesas externas e costuma abrir cedo para atender o pessoal que chega dos ônibus.</p>
+                        <a href="https://www.google.com/maps/search/?api=1&query=Mirim+Lanches+Patos+PB" target="_blank" class="btn btn-outline">Abrir no Mapa 🗺️</a>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header"><span class="card-title">Cachorro Quente Paulistano</span><span class="status-badge status-closed">Abre às 17:30</span></div>
+                        <div class="card-subtitle">Aprox. 200m • R. Horácio Nóbrega, 360</div>
+                        <div class="tags"><span class="tag">Fast-food</span><span class="tag">⭐ 4.4</span></div>
+                        <p style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 15px; line-height: 1.5;">Muito famoso na região. Focado em cachorro-quente e lanches. Como você chega cedo, não vai encontrá-lo aberto, mas é uma excelente opção para a noite.</p>
+                        <a href="https://www.google.com/maps/search/?api=1&query=Cachorro+Quente+Paulistano+Patos+PB" target="_blank" class="btn btn-outline">Abrir no Mapa 🗺️</a>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header"><span class="card-title">Rei dos Salgados</span><span class="status-badge status-open">Aberto agora</span></div>
+                        <div class="card-subtitle">Aprox. 250m • R. Horácio Nóbrega</div>
+                        <div class="tags"><span class="tag">Salgados</span><span class="tag">Rápido</span><span class="tag">Barato</span></div>
+                        <p style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 15px; line-height: 1.5;">A melhor opção para um lanche rápido e barato. Salgados assados e fritos, além de refrigerantes. Não tem local para sentar, é mais para pegar e levar.</p>
+                        <a href="https://www.google.com/maps/search/?api=1&query=Rei+dos+Salgados+Patos+PB" target="_blank" class="btn btn-outline">Abrir no Mapa 🗺️</a>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header"><span class="card-title">China Park Prime</span><span class="status-badge status-open">Aberto agora</span></div>
+                        <div class="card-subtitle">Aprox. 300m • R. Horácio Nóbrega</div>
+                        <div class="tags"><span class="tag">Restaurante Chinês</span><span class="tag">Almoço/Jantar</span></div>
+                        <p style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 15px; line-height: 1.5;">Restaurante de comida chinesa. Boa opção para o almoço, com pratos variados e buffet. Ambiente climatizado.</p>
+                        <a href="https://www.google.com/maps/search/?api=1&query=China+Park+Prime+Patos+PB" target="_blank" class="btn btn-outline">Abrir no Mapa 🗺️</a>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header"><span class="card-title">Cheers Empório</span><span class="status-badge status-closed">Abre às 18:00</span></div>
+                        <div class="card-subtitle">Aprox. 350m • R. Cândido das Laranjeiras, 327</div>
+                        <div class="tags"><span class="tag">Restaurante/Bar</span><span class="tag">⭐ 4.1</span></div>
+                        <p style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 15px; line-height: 1.5;">Localizado bem em frente à UNIFIP. Funciona mais como bar e restaurante à noite. Ótimo para happy hour ou jantar após as aulas.</p>
+                        <a href="https://www.google.com/maps/search/?api=1&query=Cheers+Emporio+Patos+PB" target="_blank" class="btn btn-outline">Abrir no Mapa 🗺️</a>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header"><span class="card-title">Pizza em Casa</span><span class="status-badge status-closed">Abre às 18:00</span></div>
+                        <div class="card-subtitle">Aprox. 400m • R. Cândido das Laranjeiras, 245</div>
+                        <div class="tags"><span class="tag">Pizzaria</span><span class="tag">⭐ 4.9</span></div>
+                        <p style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 15px; line-height: 1.5;">Pizzaria muito bem avaliada. Uma das melhores opções para o jantar noturno na região.</p>
+                        <a href="https://www.google.com/maps/search/?api=1&query=Pizza+em+Casa+Patos+PB" target="_blank" class="btn btn-outline">Abrir no Mapa 🗺️</a>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header"><span class="card-title">RI Burguer</span><span class="status-badge status-closed">Abre às 17:30</span></div>
+                        <div class="card-subtitle">Aprox. 500m • R. Frei Caneca</div>
+                        <div class="tags"><span class="tag">Hamburgueria</span><span class="tag">⭐ 5.0</span></div>
+                        <p style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 15px; line-height: 1.5;">Hamburgueria artesanal. Perfeito se você for ficar no campus até a noite. Fica um pouco mais longe, mas vale a pena.</p>
+                        <a href="https://www.google.com/maps/search/?api=1&query=RI+Burguer+Patos+PB" target="_blank" class="btn btn-outline">Abrir no Mapa 🗺️</a>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header"><span class="card-title">Chapa Quente</span><span class="status-badge status-closed">Abre às 17:30</span></div>
+                        <div class="card-subtitle">Aprox. 600m • Por trás da rodoviária velha</div>
+                        <div class="tags"><span class="tag">Hamburgueria</span><span class="tag">⭐ 4.4</span></div>
+                        <p style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 15px; line-height: 1.5;">Famoso pelos lanches na chapa. Se você estuda à noite, vale a pena provar.</p>
+                        <a href="https://www.google.com/maps/search/?api=1&query=Chapa+Quente+Patos+PB" target="_blank" class="btn btn-outline">Abrir no Mapa 🗺️</a>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ABA COMUNIDADE (FEED) -->
+            <div id="desktop-comunidade" class="desktop-section">
+                <div class="social-feed">
+                    <div class="create-post">
+                        <div class="post-avatar" id="feed-my-avatar">A</div>
+                        <input type="text" placeholder="O que está acontecendo no campus?" id="new-post-input" onkeypress="handlePostEnter(event)">
+                        <button class="btn" style="width: auto; padding: 10px 25px;" onclick="criarPost()">Postar</button>
+                    </div>
+                    <!-- Feed injetado aqui -->
+                    <div id="desktop-feed-container" onclick="handleFeedClick(event, false)"></div>
+                </div>
+            </div>
+
+            <!-- ABA PERFIL -->
+            <div id="desktop-perfil" class="desktop-section">
+                <div class="profile-card">
+                    <div class="profile-header">
+                        <div class="avatar-upload-container" onclick="document.getElementById('upload-pc').click()">
+                            <div class="profile-avatar-large" id="profile-pic-display">A</div>
+                            <div class="avatar-upload-btn">+</div>
+                        </div>
+                        <input type="file" id="upload-pc" accept="image/*" style="display: none;" onchange="handleImageUpload(event, 'pc')">
+                        
+                        <div>
+                            <h2 id="profile-name-display">Seu Nome</h2>
+                            <p id="profile-info-display">Curso • Período</p>
+                        </div>
+                    </div>
+                    
+                    <form id="profile-edit-form">
+                        <h3 style="font-size: 1.1rem; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; font-weight: 600;">Editar Informações</h3>
+                        <div class="form-group"><label>Nome</label><input type="text" id="edit-nome" required></div>
+                        <div class="form-group"><label>Curso</label><input type="text" id="edit-curso" required></div>
+                        <div class="form-group"><label>Período</label>
+                            <select id="edit-periodo" required>
+                                <option value="1º Período">1º Período</option><option value="2º Período">2º Período</option>
+                                <option value="3º Período">3º Período</option><option value="4º Período">4º Período</option>
+                                <option value="5º Período">5º Período</option><option value="6º Período">6º Período</option>
+                                <option value="7º Período">7º Período</option><option value="8º Período">8º Período</option>
+                            </select>
+                        </div>
+                        
+                        <button type="submit" class="btn" style="margin-bottom: 15px;">Salvar Alterações</button>
+                        <button type="button" class="btn btn-danger" onclick="logout()">Sair da Conta</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- ABA SUGERIR -->
+            <div id="desktop-sugerir" class="desktop-section">
+                <div class="card" style="max-width: 600px;">
+                    <h3 style="margin-bottom: 20px; font-weight: 600;">💡 Sugerir Melhoria</h3>
+                    <form id="desktop-suggestion-form">
+                        <div class="form-group"><label>O que você quer sugerir?</label>
+                            <select required>
+                                <option value="">Selecione...</option>
+                                <option value="campus">Novo espaço interno</option>
+                                <option value="arredores">Comércio nos arredores</option>
+                            </select>
+                        </div>
+                        <div class="form-group"><label>Sua mensagem</label><textarea placeholder="Descreva o local..." required></textarea></div>
+                        <button type="submit" class="btn">Enviar Sugestão</button>
+                    </form>
+                    <div id="desktop-success-card" style="display: none; text-align: center; padding: 20px;">
+                        <div style="font-size: 3rem; margin-bottom: 10px;">✅</div>
+                        <h3 style="color: var(--green); margin-bottom: 10px;">Sugestão Enviada!</h3>
+                        <button class="btn btn-outline" style="margin-top: 15px;" onclick="resetDesktopForm()">Fazer outra sugestão</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- LAYOUT MOBILE -->
+    <div class="mobile-wrapper">
+        <div class="dynamic-island"></div>
+        
+        <!-- ONBOARDING MOBILE -->
+        <div class="mobile-onboarding-full" id="mobile-onboarding">
+            <svg viewBox="0 0 24 24" fill="white" style="width: 60px; height: 60px; margin-bottom: 15px;"><path d="M12 2L2 7l10 5 10-5-10-5zm0 9l2.5-1.25L12 8.5l-2.5 1.25L12 11zm0 2.5l-5-2.5-5 2.5L12 22l10-8.5-5-2.5-5 2.5z"/></svg>
+            <h2 style="color: white; margin-bottom: 10px;">Bem-vindo</h2>
+            <p>Crie sua conta para acessar o Campus.</p>
+            
+            <form id="onboarding-form-mobile" style="width: 100%;">
+                <div class="form-group"><input type="text" id="mobile-nome" placeholder="Seu Nome" required style="padding: 15px;"></div>
+                <div class="form-group search-select-container">
+                    <input type="text" class="search-input" id="mobile-curso-search" placeholder="Buscar curso..." autocomplete="off" required style="padding: 15px;">
+                    <div class="course-dropdown" id="mobile-curso-dropdown" style="max-height: 150px;"></div>
+                    <input type="hidden" id="mobile-curso-hidden" required>
+                </div>
+                <div class="form-group">
+                    <select id="mobile-periodo" required style="padding: 15px;">
+                        <option value="">Período...</option>
+                        <option value="1º Período">1º Período</option><option value="2º Período">2º Período</option>
+                        <option value="3º Período">3º Período</option><option value="4º Período">4º Período</option>
+                        <option value="5º Período">5º Período</option><option value="6º Período">6º Período</option>
+                        <option value="7º Período">7º Período</option><option value="8º Período">8º Período</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn" style="padding: 15px; margin-top: 15px;">Criar Conta</button>
+                <button type="button" class="btn btn-outline" style="margin-top: 15px; color: white; border-color: white; background: transparent;" onclick="cancelMobileOnboarding()">Voltar para PC</button>
+            </form>
+        </div>
+
+        <!-- APP MOBILE (Só aparece se logado) -->
+        <header class="mobile-header" id="mobile-app-header">
+            <div class="mobile-header-top">
+                <h1>Campus Conecta</h1>
+                <div class="mobile-header-actions">
+                    <button class="mobile-theme-toggle-btn" onclick="toggleDarkMode()" id="theme-toggle-mobile">🌙</button>
+                    <button class="mobile-profile-btn" onclick="switchMobileTab('perfil', document.querySelectorAll('.mobile-nav-item')[3])" id="mobile-profile-initial">A</button>
+                    <button class="close-mobile-btn" onclick="tryToggleMobile()">Sair</button>
+                </div>
+            </div>
+            <p id="mobile-greeting">Bom dia.</p>
+        </header>
+
+        <main class="mobile-content" id="mobile-app-content">
+            <!-- MOBILE CAMPUS -->
+            <div id="mobile-campus" class="mobile-section active">
+                <div class="notice" style="font-size: 0.8rem; padding: 12px; margin-bottom: 15px; border-radius: 12px;">⚠️ O app não faz reservas.</div>
+                
+                <div class="card" style="padding: 18px; margin-bottom: 15px;">
+                    <div class="card-header"><span class="card-title">Shortbread (Cafeteria)</span><span class="status-badge status-open">Aberto</span></div>
+                    <div class="card-subtitle" style="font-size: 0.8rem;">Dentro do Campus • Café e Cookies</div>
+                </div>
+                
+                <div class="card" style="padding: 18px; margin-bottom: 15px;">
+                    <div class="card-header"><span class="card-title">Uniflash (Quiosque)</span><span class="status-badge status-open">24h</span></div>
+                    <div class="card-subtitle" style="font-size: 0.8rem;">Dentro do Campus • Autoatendimento</div>
+                </div>
+                
+                <div class="card" style="padding: 18px; margin-bottom: 15px;">
+                    <div class="card-header"><span class="card-title">Live Academia</span><span class="status-badge status-open">Aberto</span></div>
+                    <div class="card-subtitle" style="font-size: 0.8rem;">Dentro do Campus • Academia</div>
+                </div>
+                
+                <div class="card" style="padding: 18px; margin-bottom: 15px;">
+                    <div class="card-header"><span class="card-title">Biblioteca</span><span class="status-badge status-open">Aberto</span></div>
+                    <div class="card-subtitle" style="font-size: 0.8rem;">Bloco A • 07h às 22h</div>
+                </div>
+            </div>
+
+            <!-- MOBILE ARREDORES -->
+            <div id="mobile-arredores" class="mobile-section">
+                <div class="card" style="padding: 18px; margin-bottom: 15px;">
+                    <div class="card-header"><span class="card-title">Mirim Lanches</span><span class="status-badge status-open">Aberto</span></div>
+                    <div class="card-subtitle" style="font-size: 0.8rem;">150m • Café da manhã / Lanche</div>
+                </div>
+                <div class="card" style="padding: 18px; margin-bottom: 15px;">
+                    <div class="card-header"><span class="card-title">Rei dos Salgados</span><span class="status-badge status-open">Aberto</span></div>
+                    <div class="card-subtitle" style="font-size: 0.8rem;">250m • Salgados rápidos</div>
+                </div>
+                <div class="card" style="padding: 18px; margin-bottom: 15px;">
+                    <div class="card-header"><span class="card-title">China Park Prime</span><span class="status-badge status-open">Aberto</span></div>
+                    <div class="card-subtitle" style="font-size: 0.8rem;">300m • Restaurante Chinês</div>
+                </div>
+                <div class="card" style="padding: 18px; margin-bottom: 15px; opacity: 0.7;">
+                    <div class="card-header"><span class="card-title">Cachorro Quente Paulistano</span><span class="status-badge status-closed">Abre às 17:30</span></div>
+                    <div class="card-subtitle" style="font-size: 0.8rem;">200m • Hot Dog</div>
+                </div>
+                <div class="card" style="padding: 18px; margin-bottom: 15px; opacity: 0.7;">
+                    <div class="card-header"><span class="card-title">Cheers Empório</span><span class="status-badge status-closed">Abre às 18h</span></div>
+                    <div class="card-subtitle" style="font-size: 0.8rem;">350m • Bar/Restaurante</div>
+                </div>
+            </div>
+
+            <!-- MOBILE COMUNIDADE -->
+            <div id="mobile-comunidade" class="mobile-section">
+                <div class="create-post" style="padding: 12px; margin-bottom: 15px;">
+                    <div class="post-avatar" id="feed-my-avatar-mobile" style="width: 38px; height: 38px; font-size: 1.1rem;">A</div>
+                    <input type="text" placeholder="Postar algo..." id="new-post-input-mobile" style="padding: 10px 15px; font-size: 0.85rem;" onkeypress="handlePostEnterMobile(event)">
+                    <button class="btn" style="width: auto; padding: 10px 15px; font-size: 0.85rem;" onclick="criarPostMobile()">Postar</button>
+                </div>
+                <!-- Feed injetado aqui com Event Delegation -->
+                <div id="mobile-feed-container" onclick="handleFeedClick(event, true)"></div>
+            </div>
+
+            <!-- MOBILE PERFIL -->
+            <div id="mobile-perfil" class="mobile-section">
+                <div class="profile-card" style="padding: 20px; box-shadow: none; border: none; background: transparent;">
+                    <div class="profile-header" style="flex-direction: column; text-align: center; margin-bottom: 15px;">
+                        <div class="avatar-upload-container" onclick="document.getElementById('upload-mobile').click()" style="margin-bottom: 15px; width: 100px; height: 100px;">
+                            <div class="profile-avatar-large" id="profile-pic-display-mobile" style="font-size: 3rem;">A</div>
+                            <div class="avatar-upload-btn" style="width: 36px; height: 36px; font-size: 1.5rem;">+</div>
+                        </div>
+                        <input type="file" id="upload-mobile" accept="image/*" style="display: none;" onchange="handleImageUpload(event, 'mobile')">
+                        
+                        <h2 id="profile-name-display-mobile">Seu Nome</h2>
+                        <p id="profile-info-display-mobile">Curso • Período</p>
+                    </div>
+                    
+                    <form id="profile-edit-form-mobile" style="background: var(--card-bg); padding: 20px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid var(--border-color);">
+                        <div class="form-group"><label>Nome</label><input type="text" id="edit-nome-mobile" required></div>
+                        <div class="form-group"><label>Curso</label><input type="text" id="edit-curso-mobile" required></div>
+                        <div class="form-group"><label>Período</label>
+                            <select id="edit-periodo-mobile" required>
+                                <option value="1º Período">1º Período</option><option value="2º Período">2º Período</option>
+                                <option value="3º Período">3º Período</option><option value="4º Período">4º Período</option>
+                                <option value="5º Período">5º Período</option><option value="6º Período">6º Período</option>
+                                <option value="7º Período">7º Período</option><option value="8º Período">8º Período</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn" style="margin-bottom: 15px;">Salvar</button>
+                        <button type="button" class="btn btn-danger" onclick="logout()">Sair da Conta</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- MOBILE SUGERIR -->
+            <div id="mobile-sugerir" class="mobile-section">
+                <div class="card" id="mobile-form-card">
+                    <form id="mobile-suggestion-form">
+                        <div class="form-group"><label>O que sugerir?</label>
+                            <select required><option value="campus">Espaço interno</option><option value="arredores">Comércio externo</option></select>
+                        </div>
+                        <div class="form-group"><label>Mensagem</label><textarea placeholder="Descreva..." required></textarea></div>
+                        <button type="submit" class="btn">Enviar</button>
+                    </form>
+                </div>
+                <div class="card" id="mobile-success-card" style="display: none; text-align: center; padding: 20px;">
+                    <h3 style="color: var(--green); margin-bottom: 10px; font-size: 1.1rem;">Enviado!</h3>
+                    <button class="btn btn-outline" style="margin-top: 15px; padding: 10px;" onclick="resetMobileForm()">Nova Sugestão</button>
+                </div>
+            </div>
+
+            <!-- CHAT PRIVADO MOBILE -->
+            <div id="mobile-chat-modal" class="mobile-chat-modal">
+                <div class="chat-modal-header" style="border-radius: 0; padding: 50px 20px 20px 20px;">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <button onclick="closeMobileChatModal()" style="background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer;">←</button>
+                        <div>
+                            <h3 id="mobile-chat-name" style="color: white; margin: 0; font-size: 1.1rem;">Nome</h3>
+                            <p id="mobile-chat-course" style="font-size: 0.8rem; opacity: 0.8;">Curso</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="mobile-chat-messages" id="mobile-chat-messages"></div>
+                <div class="chat-modal-input" style="padding-bottom: 25px;">
+                    <input type="text" id="mobile-chat-input" placeholder="Digite..." onkeypress="handleMobileChatEnter(event)">
+                    <button onclick="sendMobileChatMessage()">➤</button>
+                </div>
+            </div>
+        </main>
+
+        <nav class="mobile-bottom-nav" id="mobile-app-nav">
+            <a class="mobile-nav-item active" onclick="switchMobileTab('campus', this)">
+                <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>Campus
+            </a>
+            <a class="mobile-nav-item" onclick="switchMobileTab('arredores', this)">
+                <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>Arredores
+            </a>
+            <a class="mobile-nav-item" onclick="switchMobileTab('comunidade', this)">
+                <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>Comunidade
+            </a>
+            <a class="mobile-nav-item" onclick="switchMobileTab('perfil', this)">
+                <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>Perfil
+            </a>
+            <a class="mobile-nav-item" onclick="switchMobileTab('sugerir', this)">
+                <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/></svg>Sugerir
+            </a>
+        </nav>
+        <div class="home-indicator"></div>
+    </div>
+
+    <!-- MODAL CHAT DESKTOP -->
+    <div class="modal-overlay" id="chat-modal">
+        <div class="chat-modal">
+            <div class="chat-modal-header">
+                <div><h3 id="chat-name" style="color: white; margin: 0; font-size: 1.1rem; font-weight:700;">Nome</h3><p id="chat-course" style="font-size: 0.85rem; opacity: 0.8;">Curso</p></div>
+                <button onclick="closeChatModal()" style="background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer;">✕</button>
+            </div>
+            <div class="chat-modal-messages" id="chat-messages-container"></div>
+            <div class="chat-modal-input">
+                <input type="text" id="chat-input" placeholder="Digite uma mensagem..." onkeypress="handleChatEnter(event)">
+                <button onclick="sendChatMessage()">Enviar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- LÓGICA DO DARK MODE ---
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            
+            const icon = isDark ? '☀️' : '🌙';
+            document.getElementById('theme-toggle-pc').innerText = icon;
+            document.getElementById('theme-toggle-mobile').innerText = icon;
+        }
+
+        function applySavedTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+                document.getElementById('theme-toggle-pc').innerText = '☀️';
+                document.getElementById('theme-toggle-mobile').innerText = '☀️';
+            }
+        }
+
+        // --- VARIÁVEIS GLOBAIS ---
+        let userProfile = JSON.parse(localStorage.getItem('campusUser'));
+        const cursosList = ["Administração", "Arquitetura e Urbanismo", "Biomedicina", "Direito", "Educação Física", "Enfermagem", "Engenharia Civil", "Farmácia", "Fisioterapia", "Fonoaudiologia", "Medicina", "Medicina Veterinária", "Nutrição", "Odontologia", "Psicologia", "Terapia Ocupacional", "Radiologia", "Análise e Desenvolvimento de Sistemas", "Letras", "Pedagogia", "Outro Curso"];
+        
+        let isLoggedIn = userProfile ? true : false;
+        let loggedInViaMobile = localStorage.getItem('loginMobile') === 'true';
+
+        // --- INICIALIZAÇÃO DO SISTEMA ---
+        function initSystem() {
+            applySavedTheme();
+            setupCourseSearch('pc-curso-search', 'pc-curso-dropdown', 'pc-curso-hidden');
+            setupCourseSearch('mobile-curso-search', 'mobile-curso-dropdown', 'mobile-curso-hidden');
+            renderFeed();
+            
+            if (isLoggedIn) {
+                document.getElementById('onboarding-screen').style.display = 'none';
+                document.body.classList.remove('onboarding-active');
+                updateUIWithUserData();
+            } else {
+                document.getElementById('onboarding-screen').style.display = 'flex';
+                document.body.classList.add('onboarding-active');
+            }
+        }
+
+        // --- CONTROLE DE ACESSO MOBILE/PC ---
+        function tryToggleMobile() {
+            if (isLoggedIn && !loggedInViaMobile) {
+                alert("Você fez login via PC. Para usar o app no celular, saia da conta e escolha 'Visão Mobile' na tela inicial.");
+                return;
+            }
+            if (isLoggedIn && loggedInViaMobile) {
+                alert("Para voltar à versão PC, você precisa sair da conta no seu Perfil.");
+                return;
+            }
+            document.body.classList.toggle('mobile-mode');
+            renderFeed(); // Re-renderiza para atualizar os botões baseados no modo
+        }
+
+        function toggleMobileOnboarding() {
+            document.body.classList.add('mobile-mode');
+            document.body.classList.add('onboarding-active');
+            document.getElementById('onboarding-screen').style.display = 'none';
+        }
+
+        function cancelMobileOnboarding() {
+            document.body.classList.remove('mobile-mode');
+            document.body.classList.remove('onboarding-active');
+            document.getElementById('onboarding-screen').style.display = 'flex';
+        }
+
+        // --- BUSCA DE CURSO ---
+        function setupCourseSearch(inputId, dropdownId, hiddenId) {
+            const input = document.getElementById(inputId);
+            const dropdown = document.getElementById(dropdownId);
+            const hidden = document.getElementById(hiddenId);
+            if(!input) return;
+
+            dropdown.innerHTML = '';
+            cursosList.forEach(curso => {
+                const div = document.createElement('div');
+                div.className = 'course-option';
+                div.textContent = curso;
+                div.addEventListener('click', () => {
+                    input.value = curso;
+                    hidden.value = curso;
+                    dropdown.classList.remove('active');
+                });
+                dropdown.appendChild(div);
+            });
+
+            input.addEventListener('focus', () => { dropdown.classList.add('active'); });
+            input.addEventListener('input', (e) => {
+                const filter = e.target.value.toLowerCase();
+                dropdown.classList.add('active');
+                Array.from(dropdown.children).forEach(opt => {
+                    opt.style.display = opt.textContent.toLowerCase().includes(filter) ? 'block' : 'none';
+                });
+            });
+            document.addEventListener('click', (e) => {
+                if (!input.contains(e.target) && !dropdown.contains(e.target)) dropdown.classList.remove('active');
+            });
+        }
+
+        // --- PERFIL E UPLOAD DE IMAGEM ---
+        function handleImageUpload(event, platform) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const base64Image = e.target.result;
+                    userProfile.foto = base64Image;
+                    localStorage.setItem('campusUser', JSON.stringify(userProfile));
+                    updateUIWithUserData();
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function updateUIWithUserData() {
+            if (!userProfile) return;
+            const initials = userProfile.nome.charAt(0).toUpperCase();
+            const imgUrl = userProfile.foto ? userProfile.foto : '';
+
+            const avatarHTML = imgUrl ? `<img src="${imgUrl}">` : initials;
+            
+            document.getElementById('desktop-profile-initial').innerHTML = avatarHTML;
+            document.getElementById('mobile-profile-initial').innerHTML = avatarHTML;
+            document.getElementById('feed-my-avatar').innerHTML = avatarHTML;
+            document.getElementById('feed-my-avatar-mobile').innerHTML = avatarHTML;
+            document.getElementById('profile-pic-display').innerHTML = avatarHTML;
+            document.getElementById('profile-pic-display-mobile').innerHTML = avatarHTML;
+
+            document.getElementById('profile-name-display').innerText = userProfile.nome;
+            document.getElementById('profile-info-display').innerText = `${userProfile.curso} • ${userProfile.periodo}`;
+            document.getElementById('profile-name-display-mobile').innerText = userProfile.nome;
+            document.getElementById('profile-info-display-mobile').innerText = `${userProfile.curso} • ${userProfile.periodo}`;
+
+            const horaAtual = new Date().getHours();
+            let saudacao = horaAtual < 12 ? "Bom dia" : horaAtual < 18 ? "Boa tarde" : "Boa noite";
+            document.getElementById('desktop-greeting').innerText = `${saudacao}, ${userProfile.nome.split(' ')[0]}.`;
+            document.getElementById('desktop-subtitle').innerText = `${userProfile.curso} • ${userProfile.periodo}`;
+            document.getElementById('mobile-greeting').innerText = `${saudacao}, ${userProfile.nome.split(' ')[0]}.`;
+
+            document.getElementById('edit-nome').value = userProfile.nome;
+            document.getElementById('edit-curso').value = userProfile.curso;
+            document.getElementById('edit-periodo').value = userProfile.periodo;
+            
+            document.getElementById('edit-nome-mobile').value = userProfile.nome;
+            document.getElementById('edit-curso-mobile').value = userProfile.curso;
+            document.getElementById('edit-periodo-mobile').value = userProfile.periodo;
+
+            renderFeed();
+        }
+
+        // --- SISTEMA DE POSTAGENS E COMENTÁRIOS ---
+        const dbVersion = "v2"; 
+        let feedPosts = JSON.parse(localStorage.getItem('campusFeed_' + dbVersion));
+        
+        if (!feedPosts) {
+            feedPosts = [
+                { 
+                    id: 1, 
+                    autor: "Lucas M.", 
+                    curso: "Direito", 
+                    texto: "Alguém do 1º período já chegou? Tô na praça central tomando um ar. Bora estudar!", 
+                    tempo: "Há 5 min", 
+                    foto: "",
+                    comentarios: [
+                        { autor: "Juliana S.", texto: "Já tô indo praí!" }
+                    ]
+                },
+                { 
+                    id: 2, 
+                    autor: "Juliana S.", 
+                    curso: "Enfermagem", 
+                    texto: "A biblioteca tá super vazia hoje, quem quiser um lugar silencioso pra estudar, é uma boa pedida.", 
+                    tempo: "Há 15 min", 
+                    foto: "",
+                    comentarios: []
+                },
+                { 
+                    id: 3, 
+                    autor: "Carlos", 
+                    curso: "Sistemas de Informação", 
+                    texto: "O ônibus atrasou de novo... chego umas 07:20. Alguém do lab 3?", 
+                    tempo: "Há 25 min", 
+                    foto: "",
+                    comentarios: []
+                }
+            ];
+            localStorage.setItem('campusFeed_' + dbVersion, JSON.stringify(feedPosts));
+        }
+
+        // O SEGREDO ESTÁ AQUI: Usando data-attributes e delegação de eventos
+        function renderFeed() {
+            const containers = [document.getElementById('desktop-feed-container'), document.getElementById('mobile-feed-container')];
+            let html = '';
+            
+            feedPosts.forEach(post => {
+                const isMeuPost = userProfile && post.autor === userProfile.nome;
+                const avatarDisplay = post.foto ? `<img src="${post.foto}">` : post.autor.charAt(0).toUpperCase();
+                
+                let commentsHtml = '';
+                if (post.comentarios && post.comentarios.length > 0) {
+                    post.comentarios.forEach(c => {
+                        commentsHtml += `<div class="comment"><strong>${c.autor}:</strong> ${c.texto}</div>`;
+                    });
+                }
+
+                // Atributos data-action, data-id, data-autor e data-curso
+                html += `
+                    <div class="post-card">
+                        <div class="post-header">
+                            <div class="post-avatar">${avatarDisplay}</div>
+                            <div class="post-info">
+                                <h4>${post.autor} ${isMeuPost ? '(Você)' : ''}</h4>
+                                <p>${post.curso} • ${post.tempo}</p>
+                            </div>
+                        </div>
+                        <div class="post-content">${post.texto}</div>
+                        
+                        <div class="post-actions">
+                            ${isMeuPost ? 
+                                `<button class="action-btn delete" data-action="delete" data-id="${post.id}">🗑️ Apagar Postagem</button>` : 
+                                `<div style="display:flex; gap: 10px;">
+                                    <button class="action-btn" data-action="toggle-comments" data-id="${post.id}">💬 Responder</button>
+                                    <button class="action-btn" data-action="chat" data-autor="${post.autor}" data-curso="${post.curso}">✉️ Chamar no Privado</button>
+                                </div>`
+                            }
+                        </div>
+
+                        <div class="comments-section" id="comments-${post.id}">
+                            ${commentsHtml}
+                            <div class="comment-input-area">
+                                <input type="text" id="comment-input-${post.id}" placeholder="Escreva uma resposta..." onkeypress="handleCommentEnter(event, ${post.id})">
+                                <button data-action="add-comment" data-id="${post.id}">Enviar</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            containers.forEach(c => { if (c) c.innerHTML = html; });
+        }
+
+        // A MÁGICA DA DELEGAÇÃO DE EVENTOS (Funciona no PC e no Mobile sem falhas)
+        function handleFeedClick(event, isMobile) {
+            const btn = event.target.closest('button');
+            if (!btn) return;
+
+            const action = btn.getAttribute('data-action');
+            const id = btn.getAttribute('data-id');
+            const autor = btn.getAttribute('data-autor');
+            const curso = btn.getAttribute('data-curso');
+
+            if (action === 'delete') {
+                deletarPost(id);
+            } else if (action === 'toggle-comments') {
+                toggleComments(id, isMobile);
+            } else if (action === 'chat') {
+                if (isMobile) openMobileChatModal(autor, curso);
+                else openChatModal(autor, curso);
+            } else if (action === 'add-comment') {
+                addComment(id, isMobile);
+            }
+        }
+
+        function criarPost() {
+            const input = document.getElementById('new-post-input');
+            const texto = input.value.trim();
+            if (texto !== '') {
+                feedPosts.unshift({
+                    id: Date.now(), 
+                    autor: userProfile.nome, 
+                    curso: userProfile.curso,
+                    texto: texto, 
+                    tempo: "Agora", 
+                    foto: userProfile.foto || "",
+                    comentarios: []
+                });
+                localStorage.setItem('campusFeed_' + dbVersion, JSON.stringify(feedPosts));
+                input.value = '';
+                renderFeed();
+            }
+        }
+
+        function criarPostMobile() {
+            const input = document.getElementById('new-post-input-mobile');
+            const texto = input.value.trim();
+            if (texto !== '') {
+                feedPosts.unshift({
+                    id: Date.now(), 
+                    autor: userProfile.nome, 
+                    curso: userProfile.curso,
+                    texto: texto, 
+                    tempo: "Agora", 
+                    foto: userProfile.foto || "",
+                    comentarios: []
+                });
+                localStorage.setItem('campusFeed_' + dbVersion, JSON.stringify(feedPosts));
+                input.value = '';
+                renderFeed();
+            }
+        }
+
+        function deletarPost(id) {
+            if(confirm("Tem certeza que deseja apagar esta publicação?")) {
+                feedPosts = feedPosts.filter(post => post.id !== id);
+                localStorage.setItem('campusFeed_' + dbVersion, JSON.stringify(feedPosts));
+                renderFeed();
+            }
+        }
+
+        function toggleComments(id, isMobile) {
+            const section = document.getElementById(`comments-${id}`);
+            if (section.classList.contains('active')) {
+                section.classList.remove('active');
+            } else {
+                document.querySelectorAll('.comments-section').forEach(el => el.classList.remove('active'));
+                section.classList.add('active');
+                
+                // Se for mobile, rola até o campo de texto após abrir
+                if (isMobile) {
+                    setTimeout(() => {
+                        section.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        document.getElementById(`comment-input-${id}`).focus();
+                    }, 100);
+                }
+            }
+        }
+
+        function addComment(postId, isMobile) {
+            const input = document.getElementById(`comment-input-${postId}`);
+            const texto = input.value.trim();
+            if (texto !== '') {
+                const postIndex = feedPosts.findIndex(p => p.id === parseInt(postId));
+                if (postIndex > -1) {
+                    if (!feedPosts[postIndex].comentarios) feedPosts[postIndex].comentarios = [];
+                    feedPosts[postIndex].comentarios.push({ autor: userProfile.nome, texto: texto });
+                    localStorage.setItem('campusFeed_' + dbVersion, JSON.stringify(feedPosts));
+                    renderFeed();
+                    
+                    // Mantém a caixa de comentários aberta após renderizar
+                    setTimeout(() => {
+                        const section = document.getElementById(`comments-${postId}`);
+                        if(section) {
+                            section.classList.add('active');
+                            if(isMobile) {
+                                section.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                document.getElementById(`comment-input-${postId}`).focus();
+                            }
+                        }
+                    }, 50);
+                }
+            }
+        }
+
+        function handlePostEnter(e) { if (e.key === 'Enter') criarPost(); }
+        function handlePostEnterMobile(e) { if (e.key === 'Enter') criarPostMobile(); }
+        function handleCommentEnter(e, id) { if (e.key === 'Enter') addComment(id, document.body.classList.contains('mobile-mode')); }
+
+        // --- LOGIN E LOGOUT ---
+        document.getElementById('onboarding-form-pc').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const curso = document.getElementById('pc-curso-hidden').value;
+            if (!curso) return alert("Selecione um curso.");
+            userProfile = { nome: document.getElementById('pc-nome').value, curso: curso, periodo: document.getElementById('pc-periodo').value, foto: "" };
+            localStorage.setItem('campusUser', JSON.stringify(userProfile));
+            localStorage.setItem('loginMobile', 'false');
+            isLoggedIn = true; loggedInViaMobile = false;
+            
+            document.getElementById('onboarding-screen').style.display = 'none';
+            updateUIWithUserData();
+        });
+
+        document.getElementById('onboarding-form-mobile').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const curso = document.getElementById('mobile-curso-hidden').value;
+            if (!curso) return alert("Selecione um curso.");
+            userProfile = { nome: document.getElementById('mobile-nome').value, curso: curso, periodo: document.getElementById('mobile-periodo').value, foto: "" };
+            localStorage.setItem('campusUser', JSON.stringify(userProfile));
+            localStorage.setItem('loginMobile', 'true');
+            isLoggedIn = true; loggedInViaMobile = true;
+            
+            document.body.classList.remove('onboarding-active');
+            document.getElementById('onboarding-screen').style.display = 'none';
+            updateUIWithUserData();
+        });
+
+        function logout() {
+            if(!confirm("Deseja realmente sair da conta?")) return;
+            localStorage.removeItem('campusUser');
+            localStorage.removeItem('loginMobile');
+            isLoggedIn = false; loggedInViaMobile = false;
+            userProfile = null;
+            
+            document.body.classList.remove('onboarding-active');
+            document.body.classList.remove('mobile-mode'); 
+            document.getElementById('onboarding-screen').style.display = 'flex';
+            document.getElementById('onboarding-form-pc').reset();
+            document.getElementById('onboarding-form-mobile').reset();
+            document.getElementById('pc-curso-search').value = '';
+            document.getElementById('mobile-curso-search').value = '';
+        }
+
+        // --- EDIÇÃO DE PERFIL ---
+        document.getElementById('profile-edit-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            userProfile.nome = document.getElementById('edit-nome').value;
+            userProfile.curso = document.getElementById('edit-curso').value;
+            userProfile.periodo = document.getElementById('edit-periodo').value;
+            localStorage.setItem('campusUser', JSON.stringify(userProfile));
+            updateUIWithUserData();
+            alert("Perfil atualizado com sucesso!");
+        });
+
+        document.getElementById('profile-edit-form-mobile').addEventListener('submit', function(e) {
+            e.preventDefault();
+            userProfile.nome = document.getElementById('edit-nome-mobile').value;
+            userProfile.curso = document.getElementById('edit-curso-mobile').value;
+            userProfile.periodo = document.getElementById('edit-periodo-mobile').value;
+            localStorage.setItem('campusUser', JSON.stringify(userProfile));
+            updateUIWithUserData();
+            alert("Perfil atualizado com sucesso!");
+        });
+
+        // --- NAVEGAÇÃO DE ABAS ---
+        function switchDesktopTab(tabId, element) {
+            document.querySelectorAll('.desktop-section').forEach(sec => sec.classList.remove('active'));
+            document.getElementById('desktop-' + tabId).classList.add('active');
+            document.querySelectorAll('.nav-item-desktop').forEach(item => item.classList.remove('active'));
+            if(element) element.classList.add('active');
+        }
+
+        function switchMobileTab(tabId, element) {
+            document.querySelectorAll('.mobile-section').forEach(sec => sec.classList.remove('active'));
+            document.getElementById('mobile-' + tabId).classList.add('active');
+            document.querySelectorAll('.mobile-nav-item').forEach(item => item.classList.remove('active'));
+            if(element) element.classList.add('active');
+            document.querySelector('.mobile-content').scrollTop = 0;
+        }
+
+        // --- CHAT PRIVADO (DESKTOP) ---
+        function openChatModal(nome, curso) {
+            if(nome === userProfile.nome) return alert("Você não pode conversar consigo mesmo.");
+            document.getElementById('chat-name').innerText = nome;
+            document.getElementById('chat-course').innerText = curso;
+            document.getElementById('chat-messages-container').innerHTML = `<div class="message other">Oi! Vi seu post no mural. Tudo bem?</div>`;
+            document.getElementById('chat-modal').classList.add('active');
+        }
+        function closeChatModal() { document.getElementById('chat-modal').classList.remove('active'); }
+        function sendChatMessage() {
+            const input = document.getElementById('chat-input');
+            if (input.value.trim() !== '') {
+                const c = document.getElementById('chat-messages-container');
+                c.innerHTML += `<div class="message me">${input.value}</div>`;
+                input.value = ''; c.scrollTop = c.scrollHeight;
+            }
+        }
+        function handleChatEnter(e) { if (e.key === 'Enter') sendChatMessage(); }
+
+        // --- CHAT PRIVADO (MOBILE) ---
+        function openMobileChatModal(nome, curso) {
+            if(nome === userProfile.nome) return alert("Você não pode conversar consigo mesmo.");
+            document.getElementById('mobile-chat-name').innerText = nome;
+            document.getElementById('mobile-chat-course').innerText = curso;
+            document.getElementById('mobile-chat-messages').innerHTML = `<div class="message other">Oi! Vi seu post no mural. Tudo bem?</div>`;
+            document.getElementById('mobile-chat-modal').classList.add('active');
+        }
+        function closeMobileChatModal() { document.getElementById('mobile-chat-modal').classList.remove('active'); }
+        function sendMobileChatMessage() {
+            const input = document.getElementById('mobile-chat-input');
+            if (input.value.trim() !== '') {
+                const c = document.getElementById('mobile-chat-messages');
+                c.innerHTML += `<div class="message me">${input.value}</div>`;
+                input.value = ''; c.scrollTop = c.scrollHeight;
+            }
+        }
+        function handleMobileChatEnter(e) { if (e.key === 'Enter') sendMobileChatMessage(); }
+
+        // --- SUGESTÕES ---
+        document.getElementById('desktop-suggestion-form').addEventListener('submit', function(e) {
+            e.preventDefault(); this.style.display = 'none'; document.getElementById('desktop-success-card').style.display = 'block';
+        });
+        function resetDesktopForm() { document.getElementById('desktop-suggestion-form').reset(); document.getElementById('desktop-suggestion-form').style.display = 'block'; document.getElementById('desktop-success-card').style.display = 'none'; }
+        document.getElementById('mobile-suggestion-form').addEventListener('submit', function(e) { e.preventDefault(); document.getElementById('mobile-form-card').style.display = 'none'; document.getElementById('mobile-success-card').style.display = 'block'; });
+        function resetMobileForm() { document.getElementById('mobile-suggestion-form').reset(); document.getElementById('mobile-form-card').style.display = 'block'; document.getElementById('mobile-success-card').style.display = 'none'; }
+
+        // Inicia Tudo
+        initSystem();
+    </script>
+</body>
+</html>

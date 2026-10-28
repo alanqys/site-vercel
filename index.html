@@ -575,11 +575,14 @@
             
             <form id="onboarding-form-mobile" style="width: 100%;">
                 <div class="form-group"><input type="text" id="mobile-nome" placeholder="Seu Nome" required style="padding: 15px;"></div>
+                
+                <!-- AQUI ESTAVA O ERRO, CORRIGIDO -->
                 <div class="form-group search-select-container">
                     <input type="text" class="search-input" id="mobile-curso-search" placeholder="Buscar curso..." autocomplete="off" required style="padding: 15px;">
                     <div class="course-dropdown" id="mobile-curso-dropdown" style="max-height: 150px;"></div>
                     <input type="hidden" id="mobile-curso-hidden" required>
                 </div>
+                
                 <div class="form-group">
                     <select id="mobile-periodo" required style="padding: 15px;">
                         <option value="">Período...</option>

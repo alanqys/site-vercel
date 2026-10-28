@@ -279,10 +279,14 @@
             body:not(.logged-in) .mobile-bottom-nav { display: none !important; }
             body:not(.logged-in) .mobile-wrapper { background: var(--primary); }
 
-            /* Ajuste do Chat Mobile para ocupar tudo */
+            /* Ajuste do Chat Mobile para ocupar tudo e ter respiro embaixo */
             .mobile-chat-modal {
                 position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh; 
                 z-index: 999999;
+            }
+            
+            .chat-modal-input {
+                padding-bottom: 30px; /* Respiro para o botão de enviar não colar no navegador */
             }
         }
 
@@ -794,7 +798,8 @@
                     </div>
                 </div>
                 <div class="mobile-chat-messages" id="mobile-chat-messages"></div>
-                <div class="chat-modal-input" style="padding-bottom: 20px;">
+                <!-- Respiro adicionado aqui para o botão não colar -->
+                <div class="chat-modal-input" style="padding-bottom: 30px;">
                     <input type="text" id="mobile-chat-input" placeholder="Digite..." onkeypress="handleMobileChatEnter(event)">
                     <button onclick="sendMobileChatMessage()">➤</button>
                 </div>

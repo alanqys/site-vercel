@@ -99,6 +99,18 @@
             font-size: 0.85rem; color: var(--text-dark); font-weight: 500; cursor: pointer; margin: 0;
         }
 
+        /* BOTÃO DE CRIAR CONTA PERSONALIZADO (MOBILE) */
+        .btn-mobile-onboarding {
+            display: block; width: 100%; padding: 16px; 
+            background-color: white; color: var(--primary);
+            border: none; border-radius: 12px; 
+            font-size: 1rem; font-weight: 700; 
+            cursor: pointer; margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: transform 0.2s, filter 0.2s;
+        }
+        .btn-mobile-onboarding:active { transform: scale(0.96); filter: brightness(0.9); }
+
         /* =========================================
            LAYOUT DESKTOP
            ========================================= */
@@ -616,7 +628,8 @@
                     <label for="mobile-lembrar">Lembrar de mim</label>
                 </div>
 
-                <button type="submit" class="btn" style="padding: 15px; margin-top: 15px;">Criar Conta</button>
+                <!-- BOTÃO PERSONALIZADO AQUI -->
+                <button type="submit" class="btn-mobile-onboarding">Criar Conta</button>
             </form>
         </div>
 

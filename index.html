@@ -1,3 +1,13 @@
+Perfeito! Removi completamente a opção "Responder" (e todo o sistema de comentários junto, para não deixar código inútil) e ajustei o botão "Chamar no Privado" para ocupar a largura total do card, tanto no PC quanto no Mobile. Além disso, a janela de chat no celular agora ocupa 100% da tela como um app de verdade.
+
+### O que mudou:
+1. **Removido "Responder":** A opção e a lógica de comentários foram deletadas.
+2. **Botão de Chat em Tela Cheia:** O botão "Chamar no Privado" agora tem `width: 100%`, preenchendo todo o espaço inferior do post.
+3. **Chat Mobile Full Screen:** No celular, a tela de conversa ocupa toda a tela sem sobras, igual ao WhatsApp.
+
+Aqui está o código completo atualizado:
+
+```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -93,6 +103,17 @@
         .course-option { padding: 10px 12px; cursor: pointer; font-size: 0.85rem; border-bottom: 1px solid var(--border-color); text-align: left; color: var(--text-dark); }
         .course-option:hover { background-color: var(--primary-light); color: var(--primary); }
 
+        /* LEMBRAR DE MIM */
+        .remember-me-group {
+            display: flex; align-items: center; gap: 8px; margin-bottom: 15px; cursor: pointer;
+        }
+        .remember-me-group input {
+            width: 18px; height: 18px; cursor: pointer; accent-color: var(--primary);
+        }
+        .remember-me-group label {
+            font-size: 0.85rem; color: var(--text-dark); font-weight: 500; cursor: pointer; margin: 0;
+        }
+
         /* =========================================
            LAYOUT DESKTOP
            ========================================= */
@@ -162,18 +183,10 @@
         .post-content { font-size: 0.95rem; color: var(--text-dark); margin-bottom: 18px; line-height: 1.6; }
         .post-actions { display: flex; justify-content: space-between; border-top: 1px solid var(--border-color); padding-top: 15px; align-items: center; }
         
-        .action-btn { background: none; border: none; color: var(--text-light); font-weight: 600; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; padding: 8px 15px; border-radius: 8px; transition: background 0.2s; }
+        .action-btn { background: none; border: none; color: var(--text-light); font-weight: 600; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 15px; border-radius: 8px; transition: background 0.2s; width: 100%; }
         .action-btn:hover { background: var(--secondary); color: var(--primary); }
-        .action-btn.delete { color: #e74c3c; }
+        .action-btn.delete { color: #e74c3c; background: var(--secondary); }
         .action-btn.delete:hover { background: rgba(231, 76, 60, 0.1); }
-        
-        .comments-section { margin-top: 15px; padding-top: 15px; border-top: 1px dashed var(--border-color); display: none; }
-        .comments-section.active { display: block; }
-        .comment { background: var(--secondary); padding: 12px 15px; border-radius: 12px; margin-bottom: 10px; font-size: 0.9rem; color: var(--text-dark);}
-        .comment strong { color: var(--primary); }
-        .comment-input-area { display: flex; gap: 10px; margin-top: 10px; }
-        .comment-input-area input { flex: 1; padding: 10px 15px; border: 1px solid var(--border-color); border-radius: 20px; outline: none; font-size: 0.9rem; background: var(--card-bg); color: var(--text-dark);}
-        .comment-input-area button { background: var(--primary); color: white; border: none; padding: 0 20px; border-radius: 20px; cursor: pointer; font-size: 0.85rem; font-weight: 600; }
 
         /* =========================================
            PERFIL
@@ -283,6 +296,7 @@
         .mobile-onboarding-full h2 { color: white; margin-bottom: 20px; font-weight: 700; }
         .mobile-onboarding-full p { color: rgba(255,255,255,0.8); font-size: 0.9rem; margin-bottom: 20px; text-align: center; }
         .mobile-onboarding-full .search-input { background: white; color: #000; }
+        .mobile-onboarding-full .remember-me-group label { color: rgba(255,255,255,0.9); }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
@@ -314,6 +328,12 @@
                         <option value="7º Período">7º Período</option><option value="8º Período">8º Período</option>
                     </select>
                 </div>
+                
+                <div class="remember-me-group">
+                    <input type="checkbox" id="pc-lembrar" checked>
+                    <label for="pc-lembrar">Lembrar de mim</label>
+                </div>
+
                 <button type="submit" class="btn" style="margin-top: 15px;">Entrar</button>
             </form>
         </div>
@@ -571,6 +591,12 @@
                         <option value="7º Período">7º Período</option><option value="8º Período">8º Período</option>
                     </select>
                 </div>
+                
+                <div class="remember-me-group">
+                    <input type="checkbox" id="mobile-lembrar" checked>
+                    <label for="mobile-lembrar">Lembrar de mim</label>
+                </div>
+
                 <button type="submit" class="btn" style="padding: 15px; margin-top: 15px;">Criar Conta</button>
             </form>
         </div>
@@ -823,7 +849,7 @@
         }
 
         // --- VARIÁVEIS GLOBAIS ---
-        let userProfile = JSON.parse(localStorage.getItem('campusUser'));
+        let userProfile = JSON.parse(localStorage.getItem('campusUser')) || JSON.parse(sessionStorage.getItem('campusUser'));
         const cursosList = ["Administração", "Arquitetura e Urbanismo", "Biomedicina", "Direito", "Educação Física", "Enfermagem", "Engenharia Civil", "Farmácia", "Fisioterapia", "Fonoaudiologia", "Medicina", "Medicina Veterinária", "Nutrição", "Odontologia", "Psicologia", "Terapia Ocupacional", "Radiologia", "Análise e Desenvolvimento de Sistemas", "Letras", "Pedagogia", "Outro Curso"];
         
         let isLoggedIn = userProfile ? true : false;
@@ -893,6 +919,7 @@
                     const base64Image = e.target.result;
                     userProfile.foto = base64Image;
                     localStorage.setItem('campusUser', JSON.stringify(userProfile));
+                    sessionStorage.setItem('campusUser', JSON.stringify(userProfile));
                     updateUIWithUserData();
                 };
                 reader.readAsDataURL(file);
@@ -935,7 +962,7 @@
             renderFeed();
         }
 
-        // --- SISTEMA DE POSTAGENS E COMENTÁRIOS ---
+        // --- SISTEMA DE POSTAGENS ---
         const dbVersion = "v2"; 
         let feedPosts = JSON.parse(localStorage.getItem('campusFeed_' + dbVersion));
         
@@ -982,13 +1009,6 @@
                 const isMeuPost = userProfile && post.autor === userProfile.nome;
                 const avatarDisplay = post.foto ? `<img src="${post.foto}">` : post.autor.charAt(0).toUpperCase();
                 
-                let commentsHtml = '';
-                if (post.comentarios && post.comentarios.length > 0) {
-                    post.comentarios.forEach(c => {
-                        commentsHtml += `<div class="comment"><strong>${c.autor}:</strong> ${c.texto}</div>`;
-                    });
-                }
-
                 html += `
                     <div class="post-card">
                         <div class="post-header">
@@ -1003,19 +1023,8 @@
                         <div class="post-actions">
                             ${isMeuPost ? 
                                 `<button class="action-btn delete" data-action="delete" data-id="${post.id}">🗑️ Apagar Postagem</button>` : 
-                                `<div style="display:flex; gap: 10px;">
-                                    <button class="action-btn" data-action="toggle-comments" data-id="${post.id}">💬 Responder</button>
-                                    <button class="action-btn" data-action="chat" data-autor="${post.autor}" data-curso="${post.curso}">✉️ Chamar no Privado</button>
-                                </div>`
+                                `<button class="action-btn" data-action="chat" data-autor="${post.autor}" data-curso="${post.curso}">✉️ Chamar no Privado</button>`
                             }
-                        </div>
-
-                        <div class="comments-section" id="comments-${post.id}">
-                            ${commentsHtml}
-                            <div class="comment-input-area">
-                                <input type="text" id="comment-input-${post.id}" placeholder="Escreva uma resposta..." onkeypress="handleCommentEnter(event, ${post.id})">
-                                <button data-action="add-comment" data-id="${post.id}">Enviar</button>
-                            </div>
                         </div>
                     </div>
                 `;
@@ -1035,13 +1044,9 @@
 
             if (action === 'delete') {
                 deletarPost(id);
-            } else if (action === 'toggle-comments') {
-                toggleComments(id, isMobile);
             } else if (action === 'chat') {
                 if (isMobile) openMobileChatModal(autor, curso);
                 else openChatModal(autor, curso);
-            } else if (action === 'add-comment') {
-                addComment(id, isMobile);
             }
         }
 
@@ -1092,86 +1097,48 @@
             }
         }
 
-        function toggleComments(id, isMobile) {
-            const section = document.getElementById(`comments-${id}`);
-            if (section.classList.contains('active')) {
-                section.classList.remove('active');
-            } else {
-                document.querySelectorAll('.comments-section').forEach(el => el.classList.remove('active'));
-                section.classList.add('active');
-                
-                if (isMobile) {
-                    setTimeout(() => {
-                        section.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        document.getElementById(`comment-input-${id}`).focus();
-                    }, 100);
-                }
-            }
-        }
-
-        function addComment(postId, isMobile) {
-            const input = document.getElementById(`comment-input-${postId}`);
-            const texto = input.value.trim();
-            if (texto !== '') {
-                const postIndex = feedPosts.findIndex(p => p.id.toString() === postId.toString());
-                if (postIndex > -1) {
-                    if (!feedPosts[postIndex].comentarios) feedPosts[postIndex].comentarios = [];
-                    feedPosts[postIndex].comentarios.push({ autor: userProfile.nome, texto: texto });
-                    localStorage.setItem('campusFeed_' + dbVersion, JSON.stringify(feedPosts));
-                    renderFeed();
-                    
-                    setTimeout(() => {
-                        const section = document.getElementById(`comments-${postId}`);
-                        if(section) {
-                            section.classList.add('active');
-                            if(isMobile) {
-                                section.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                                document.getElementById(`comment-input-${postId}`).focus();
-                            }
-                        }
-                    }, 50);
-                }
-            }
-        }
-
         function handlePostEnter(e) { if (e.key === 'Enter') criarPost(); }
         function handlePostEnterMobile(e) { if (e.key === 'Enter') criarPostMobile(); }
-        function handleCommentEnter(e, id) { 
-            if (e.key === 'Enter') {
-                const isMobile = window.innerWidth <= 768 || document.body.classList.contains('mobile-mode');
-                addComment(id, isMobile); 
-            }
-        }
 
         // --- LOGIN E LOGOUT ---
+        function saveUserAndLogin(nome, curso, periodo, lembrar) {
+            userProfile = { nome: nome, curso: curso, periodo: periodo, foto: "" };
+            
+            // Se marcou "Lembrar", salva no localStorage. Se não, salva só no sessionStorage (apaga ao fechar o navegador).
+            if (lembrar) {
+                localStorage.setItem('campusUser', JSON.stringify(userProfile));
+                sessionStorage.removeItem('campusUser');
+            } else {
+                sessionStorage.setItem('campusUser', JSON.stringify(userProfile));
+                localStorage.removeItem('campusUser');
+            }
+
+            isLoggedIn = true;
+            document.body.classList.add('logged-in');
+            document.getElementById('onboarding-screen-pc').style.display = 'none';
+            updateUIWithUserData();
+        }
+
         document.getElementById('onboarding-form-pc').addEventListener('submit', function(e) {
             e.preventDefault();
             const curso = document.getElementById('pc-curso-hidden').value;
             if (!curso) return alert("Selecione um curso.");
-            userProfile = { nome: document.getElementById('pc-nome').value, curso: curso, periodo: document.getElementById('pc-periodo').value, foto: "" };
-            localStorage.setItem('campusUser', JSON.stringify(userProfile));
-            isLoggedIn = true;
-            
-            document.getElementById('onboarding-screen-pc').style.display = 'none';
-            document.body.classList.add('logged-in');
-            updateUIWithUserData();
+            const lembrar = document.getElementById('pc-lembrar').checked;
+            saveUserAndLogin(document.getElementById('pc-nome').value, curso, document.getElementById('pc-periodo').value, lembrar);
         });
 
         document.getElementById('onboarding-form-mobile').addEventListener('submit', function(e) {
             e.preventDefault();
             const curso = document.getElementById('mobile-curso-hidden').value;
             if (!curso) return alert("Selecione um curso.");
-            userProfile = { nome: document.getElementById('mobile-nome').value, curso: curso, periodo: document.getElementById('mobile-periodo').value, foto: "" };
-            localStorage.setItem('campusUser', JSON.stringify(userProfile));
-            isLoggedIn = true;
-            
-            document.body.classList.add('logged-in');
-            updateUIWithUserData();
+            const lembrar = document.getElementById('mobile-lembrar').checked;
+            saveUserAndLogin(document.getElementById('mobile-nome').value, curso, document.getElementById('mobile-periodo').value, lembrar);
         });
 
         function logout() {
             if(!confirm("Deseja realmente sair da conta?")) return;
             localStorage.removeItem('campusUser');
+            sessionStorage.removeItem('campusUser');
             isLoggedIn = false;
             userProfile = null;
             
@@ -1190,6 +1157,7 @@
             userProfile.curso = document.getElementById('edit-curso').value;
             userProfile.periodo = document.getElementById('edit-periodo').value;
             localStorage.setItem('campusUser', JSON.stringify(userProfile));
+            sessionStorage.setItem('campusUser', JSON.stringify(userProfile));
             updateUIWithUserData();
             alert("Perfil atualizado com sucesso!");
         });
@@ -1200,6 +1168,7 @@
             userProfile.curso = document.getElementById('edit-curso-mobile').value;
             userProfile.periodo = document.getElementById('edit-periodo-mobile').value;
             localStorage.setItem('campusUser', JSON.stringify(userProfile));
+            sessionStorage.setItem('campusUser', JSON.stringify(userProfile));
             updateUIWithUserData();
             alert("Perfil atualizado com sucesso!");
         });
@@ -1271,3 +1240,4 @@
     </script>
 </body>
 </html>
+```

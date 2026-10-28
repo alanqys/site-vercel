@@ -212,9 +212,22 @@
            MOBILE (Oculta por padrão no PC)
            ========================================= */
         .mobile-wrapper { display: none; }
-        .mobile-chat-modal { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--card-bg); display: none; flex-direction: column; z-index: 300; overflow: hidden; }
+        
+        /* CHAT MOBILE E TRAVA DE SCROLL */
+        body.chat-open { overflow: hidden; } /* Trava o fundo */
+        body.chat-open .mobile-content { overflow: hidden; } 
+
+        .mobile-chat-modal { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            background: var(--card-bg); display: none; flex-direction: column; 
+            z-index: 300; overflow: hidden; /* Evita scroll na janela toda */
+        }
         .mobile-chat-modal.active { display: flex; }
-        .mobile-chat-messages { flex: 1; overflow-y: auto; padding: 20px; background: var(--chat-bg); display: flex; flex-direction: column; gap: 10px; }
+        
+        .mobile-chat-messages { 
+            flex: 1; overflow-y: auto; padding: 20px; background: var(--chat-bg); 
+            display: flex; flex-direction: column; gap: 10px; 
+        }
 
         /* =========================================
            EMULADOR DE CELULAR (APENAS NO PC)
@@ -265,6 +278,12 @@
             body:not(.logged-in) .mobile-content > div,
             body:not(.logged-in) .mobile-bottom-nav { display: none !important; }
             body:not(.logged-in) .mobile-wrapper { background: var(--primary); }
+
+            /* Ajuste do Chat Mobile para ocupar tudo */
+            .mobile-chat-modal {
+                position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh; 
+                z-index: 999999;
+            }
         }
 
         /* ESTILOS COMPARTILHADOS MOBILE (Funciona no emulador e no celular real) */
@@ -1204,9 +1223,15 @@
             document.getElementById('mobile-chat-name').innerText = nome;
             document.getElementById('mobile-chat-course').innerText = curso;
             document.getElementById('mobile-chat-messages').innerHTML = `<div class="message other">Oi! Vi seu post no mural. Tudo bem?</div>`;
+            
+            // AQUI ESTÁ A TRAVA DO SCROLL
+            document.body.classList.add('chat-open'); 
             document.getElementById('mobile-chat-modal').classList.add('active');
         }
-        function closeMobileChatModal() { document.getElementById('mobile-chat-modal').classList.remove('active'); }
+        function closeMobileChatModal() { 
+            document.body.classList.remove('chat-open');
+            document.getElementById('mobile-chat-modal').classList.remove('active'); 
+        }
         function sendMobileChatMessage() {
             const input = document.getElementById('mobile-chat-input');
             if (input.value.trim() !== '') {
@@ -1230,4 +1255,3 @@
     </script>
 </body>
 </html>
-```

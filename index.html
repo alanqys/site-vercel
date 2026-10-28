@@ -1085,7 +1085,8 @@
 
         function deletarPost(id) {
             if(confirm("Tem certeza que deseja apagar esta publicação?")) {
-                feedPosts = feedPosts.filter(post => post.id !== id);
+                // Converte o ID para string para garantir que a comparação funcione
+                feedPosts = feedPosts.filter(post => post.id.toString() !== id.toString());
                 localStorage.setItem('campusFeed_' + dbVersion, JSON.stringify(feedPosts));
                 renderFeed();
             }
@@ -1112,7 +1113,7 @@
             const input = document.getElementById(`comment-input-${postId}`);
             const texto = input.value.trim();
             if (texto !== '') {
-                const postIndex = feedPosts.findIndex(p => p.id === parseInt(postId));
+                const postIndex = feedPosts.findIndex(p => p.id.toString() === postId.toString());
                 if (postIndex > -1) {
                     if (!feedPosts[postIndex].comentarios) feedPosts[postIndex].comentarios = [];
                     feedPosts[postIndex].comentarios.push({ autor: userProfile.nome, texto: texto });
@@ -1270,4 +1271,3 @@
     </script>
 </body>
 </html>
-

@@ -2,16 +2,16 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Campus Conecta - UNIFIP Patos</title>
     <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iIzAwNGI4NyI+PHBhdGggZD0iTTEyIDJMMiA3bDEwIDUgMTAtNS0xMC01em0wIDlsMi41LTEuMjVMMTIgOC41bC0yLjUgMS4yNUwxMiAxMXptMCAyLjVsLTUtMi41LTUgMi41TDEyIDIybDEwLTguNS01LTIuNS01IDIuNXoiLz48L3N2Zz4=">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
         /* =========================================
-           RESET E VARIÁVEIS (LIGHT MODE PADRÃO)
+           RESET E VARIÁVEIS
            ========================================= */
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
         :root {
             --primary: #004b87; 
             --primary-light: #e8f0f8; 
@@ -31,9 +31,7 @@
             --chat-bubble-other: #ffffff;
         }
 
-        /* =========================================
-           DARK MODE VARIÁVEIS
-           ========================================= */
+        /* DARK MODE */
         body.dark-mode {
             --primary: #4da3ff;
             --primary-light: #1a3d5c; 
@@ -53,20 +51,20 @@
             --chat-bubble-other: #202c33;
         }
 
-        body { background-color: var(--bg-color); color: var(--text-dark); height: 100vh; overflow: hidden; display: flex; flex-direction: column; transition: background-color 0.3s, color 0.3s; }
+        body { background-color: var(--bg-color); color: var(--text-dark); height: 100vh; height: 100dvh; overflow: hidden; display: flex; flex-direction: column; transition: background-color 0.3s, color 0.3s; }
 
         /* =========================================
-           ONBOARDING (CADASTRO PC)
+           ONBOARDING (CADASTRO)
            ========================================= */
         .onboarding-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: var(--primary); display: flex; justify-content: center; align-items: center;
-            z-index: 9999; padding: 20px; transition: all 0.3s;
+            z-index: 9999; padding: 20px; transition: all 0.3s; overflow-y: auto;
         }
         .onboarding-box {
             background-color: var(--card-bg); padding: 30px; border-radius: 20px;
             width: 100%; max-width: 420px; box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-            text-align: center; position: relative; z-index: 10000;
+            text-align: center; position: relative; z-index: 10000; margin: auto;
         }
         .btn-toggle-mobile-onboard {
             position: absolute; top: -50px; right: 0; background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.5);
@@ -96,9 +94,9 @@
         .course-option:hover { background-color: var(--primary-light); color: var(--primary); }
 
         /* =========================================
-           LAYOUT GERAL
+           LAYOUT DESKTOP
            ========================================= */
-        .desktop-wrapper { display: flex; height: 100vh; width: 100%; }
+        .desktop-wrapper { display: flex; height: 100vh; height: 100dvh; width: 100%; }
         .sidebar { width: 260px; background-color: var(--card-bg); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; padding: 20px; z-index: 10; transition: background-color 0.3s;}
         .logo-area { display: flex; align-items: center; gap: 10px; margin-bottom: 30px; }
         .logo-area svg { width: 35px; height: 35px; }
@@ -150,7 +148,7 @@
         .desktop-section.active { display: block; animation: fadeIn 0.4s ease-out; }
 
         /* =========================================
-           FEED E POSTS (REDE SOCIAL)
+           FEED E POSTS
            ========================================= */
         .social-feed { max-width: 650px; margin: 0 auto; position: relative; z-index: 2; }
         .create-post { background: var(--card-bg); padding: 15px; border-radius: 16px; box-shadow: var(--shadow); margin-bottom: 20px; display: flex; gap: 12px; align-items: center; border: 1px solid var(--border-color);}
@@ -192,7 +190,7 @@
         .profile-header p { font-size: 0.95rem; color: var(--text-light); font-weight: 500;}
 
         /* =========================================
-           CHAT MODAL
+           CHAT MODAL (DESKTOP)
            ========================================= */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 10000; backdrop-filter: blur(3px);}
         .modal-overlay.active { display: flex; }
@@ -208,20 +206,65 @@
         body.dark-mode .message.me { color: #fff; }
 
         /* =========================================
-           MOBILE FIRST & EMULADOR
+           MOBILE (Oculta por padrão no PC)
            ========================================= */
-        body.mobile-mode { background-color: #121212; align-items: center; justify-content: center; }
-        body.mobile-mode .desktop-wrapper, body.mobile-mode .onboarding-box { display: none; }
-        
         .mobile-wrapper { display: none; }
-        body.mobile-mode .mobile-wrapper {
-            display: flex; flex-direction: column; width: 375px; height: 812px; background-color: var(--bg-color); border-radius: 40px;
-            box-shadow: 0 0 0 12px #2a2a2a, 0 0 0 15px #555, 0 25px 60px rgba(0,0,0,0.9); overflow: hidden; position: relative; z-index: 99999;
+        .mobile-chat-modal { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--card-bg); display: none; flex-direction: column; z-index: 300; overflow: hidden; }
+        .mobile-chat-modal.active { display: flex; }
+        .mobile-chat-messages { flex: 1; overflow-y: auto; padding: 20px; background: var(--chat-bg); display: flex; flex-direction: column; gap: 10px; }
+
+        /* =========================================
+           EMULADOR DE CELULAR (APENAS NO PC)
+           ========================================= */
+        @media (min-width: 769px) {
+            body.mobile-mode { background-color: #121212; align-items: center; justify-content: center; }
+            body.mobile-mode .desktop-wrapper, body.mobile-mode .onboarding-box { display: none; }
+            
+            body.mobile-mode .mobile-wrapper {
+                display: flex; flex-direction: column; width: 375px; height: 812px; background-color: var(--bg-color); border-radius: 40px;
+                box-shadow: 0 0 0 12px #2a2a2a, 0 0 0 15px #555, 0 25px 60px rgba(0,0,0,0.9); overflow: hidden; position: relative; z-index: 99999;
+            }
+            .dynamic-island { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); width: 110px; height: 30px; background-color: #000; border-radius: 20px; z-index: 100; }
+            .home-indicator { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); width: 130px; height: 5px; background-color: #000; border-radius: 10px; z-index: 100; opacity: 0.8; }
+            body.dark-mode .home-indicator { background-color: #fff; }
+            .mobile-header { background-color: var(--primary); color: white; padding: 55px 20px 15px 20px; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; position: relative; z-index: 10; }
+            .mobile-content { flex: 1; overflow-y: auto; padding: 15px; padding-bottom: 90px; position: relative; z-index: 1; background-color: var(--bg-color); }
+            .mobile-bottom-nav { position: absolute; bottom: 0; width: 100%; background-color: var(--card-bg); display: flex; justify-content: space-around; padding: 12px 0 25px 0; border-top: 1px solid var(--border-color); z-index: 10; transition: background-color 0.3s;}
         }
 
-        .dynamic-island { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); width: 110px; height: 30px; background-color: #000; border-radius: 20px; z-index: 100; }
-        
-        .mobile-header { background-color: var(--primary); color: white; padding: 55px 20px 15px 20px; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; position: relative; z-index: 10; }
+        /* =========================================
+           REAL MOBILE (Telas até 768px - Smartphones reais)
+           ========================================= */
+        @media (max-width: 768px) {
+            .desktop-wrapper, .onboarding-box, .btn-toggle-mobile-onboard { display: none !important; }
+            .onboarding-overlay { background-color: var(--bg-color); padding: 0; }
+            
+            /* O app ocupa a tela toda */
+            .mobile-wrapper {
+                display: flex; flex-direction: column; width: 100vw; height: 100vh; height: 100dvh; 
+                background-color: var(--bg-color); overflow: hidden; position: relative; z-index: 99999;
+            }
+            
+            /* Remove a carcaça do iPhone */
+            .dynamic-island, .home-indicator { display: none !important; }
+            
+            .mobile-header { background-color: var(--primary); color: white; padding: 20px 20px 15px 20px; position: relative; z-index: 10; }
+            .mobile-content { flex: 1; overflow-y: auto; padding: 15px; padding-bottom: 90px; position: relative; z-index: 1; background-color: var(--bg-color); }
+            .mobile-bottom-nav { position: absolute; bottom: 0; width: 100%; background-color: var(--card-bg); display: flex; justify-content: space-around; padding: 12px 0 15px 0; border-top: 1px solid var(--border-color); z-index: 10; transition: background-color 0.3s;}
+            
+            /* Onboarding ocupa tudo no mobile real */
+            .mobile-onboarding-full {
+                display: flex; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+                background: var(--primary); z-index: 200; padding: 40px 20px; flex-direction: column; align-items: center; justify-content: center;
+            }
+            body.logged-in .mobile-onboarding-full { display: none !important; }
+            body:not(.logged-in) .mobile-header,
+            body:not(.logged-in) .mobile-content > div,
+            body:not(.logged-in) .mobile-bottom-nav { display: none !important; }
+            body:not(.logged-in) .mobile-wrapper { background: var(--primary); }
+        }
+
+        /* ESTILOS COMPARTILHADOS MOBILE (Funciona no emulador e no celular real) */
         .mobile-header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
         .mobile-header h1 { font-size: 1.2rem; font-weight: 700; }
         .mobile-header-actions { display: flex; gap: 10px; align-items: center;}
@@ -229,44 +272,17 @@
         .mobile-profile-btn { background: rgba(255,255,255,0.2); border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; overflow: hidden; display: flex; justify-content: center; align-items: center; color: white; font-weight: bold; }
         .mobile-profile-btn img { width: 100%; height: 100%; object-fit: cover; }
         .mobile-header p { font-size: 0.85rem; opacity: 0.9; font-weight: 500; }
-
         .mobile-theme-toggle-btn { background: rgba(255,255,255,0.2); border: none; color: white; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 1rem; }
-
-        .mobile-content { flex: 1; overflow-y: auto; padding: 15px; padding-bottom: 90px; position: relative; z-index: 1; background-color: var(--bg-color); }
-
         .mobile-section { display: none; position: relative; z-index: 2; }
         .mobile-section.active { display: block; animation: fadeIn 0.3s; }
-
-        .mobile-onboarding-full {
-            display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--primary); z-index: 200; padding: 40px 20px; flex-direction: column; align-items: center; justify-content: center;
-        }
-        body.mobile-mode.onboarding-active .mobile-onboarding-full { display: flex; }
+        .mobile-nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-light); font-size: 0.7rem; cursor: pointer; font-weight: 500; }
+        .mobile-nav-item svg { width: 22px; height: 22px; margin-bottom: 4px; fill: currentColor; }
+        .mobile-nav-item.active { color: var(--primary); font-weight: 700; }
         .mobile-onboarding-full .form-group { width: 100%; }
         .mobile-onboarding-full .btn { width: 100%; margin-top: 10px; }
         .mobile-onboarding-full h2 { color: white; margin-bottom: 20px; font-weight: 700; }
         .mobile-onboarding-full p { color: rgba(255,255,255,0.8); font-size: 0.9rem; margin-bottom: 20px; text-align: center; }
         .mobile-onboarding-full .search-input { background: white; color: #000; }
-
-        .home-indicator { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); width: 130px; height: 5px; background-color: #000; border-radius: 10px; z-index: 100; opacity: 0.8; }
-        body.dark-mode .home-indicator { background-color: #fff; }
-        .mobile-bottom-nav { position: absolute; bottom: 0; width: 100%; background-color: var(--card-bg); display: flex; justify-content: space-around; padding: 12px 0 25px 0; border-top: 1px solid var(--border-color); z-index: 10; transition: background-color 0.3s;}
-        .mobile-nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-light); font-size: 0.7rem; cursor: pointer; font-weight: 500; }
-        .mobile-nav-item svg { width: 22px; height: 22px; margin-bottom: 4px; fill: currentColor; }
-        .mobile-nav-item.active { color: var(--primary); font-weight: 700; }
-        
-        /* CORREÇÃO DO CHAT MOBILE */
-        .mobile-chat-modal { 
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-            background: var(--card-bg); display: none; flex-direction: column; 
-            z-index: 300; overflow: hidden;
-        }
-        .mobile-chat-modal.active { display: flex; }
-        
-        .mobile-chat-messages {
-            flex: 1; overflow-y: auto; padding: 20px; background: var(--chat-bg); 
-            display: flex; flex-direction: column; gap: 10px;
-        }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
@@ -274,9 +290,9 @@
 <body>
 
     <!-- ONBOARDING (PC) -->
-    <div class="onboarding-overlay" id="onboarding-screen">
+    <div class="onboarding-overlay" id="onboarding-screen-pc">
         <div class="onboarding-box">
-            <button class="btn-toggle-mobile-onboard" onclick="toggleMobileOnboarding()">📱 Visão Mobile</button>
+            <button class="btn-toggle-mobile-onboard" onclick="toggleMobileMode()">📱 Visão Mobile</button>
             <svg viewBox="0 0 24 24" fill="var(--primary)" style="width: 50px; height: 50px; margin-bottom: 10px;"><path d="M12 2L2 7l10 5 10-5-10-5zm0 9l2.5-1.25L12 8.5l-2.5 1.25L12 11zm0 2.5l-5-2.5-5 2.5L12 22l10-8.5-5-2.5-5 2.5z"/></svg>
             <h2>Campus Conecta</h2>
             <p>Conecte-se com a UNIFIP Patos.</p>
@@ -338,7 +354,7 @@
                 <div class="header-actions">
                     <button class="theme-toggle-btn" onclick="toggleDarkMode()" id="theme-toggle-pc">🌙</button>
                     <button class="profile-btn" onclick="switchDesktopTab('perfil', document.querySelectorAll('.nav-item-desktop')[3])" id="desktop-profile-initial">A</button>
-                    <button class="toggle-mobile-btn" style="background: var(--primary); color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 10px rgba(0, 75, 135, 0.3); transition: all 0.2s;" onclick="tryToggleMobile()">📱 Visão Mobile</button>
+                    <button class="toggle-mobile-btn" style="background: var(--primary); color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 10px rgba(0, 75, 135, 0.3); transition: all 0.2s;" onclick="toggleMobileMode()">📱 Visão Mobile</button>
                 </div>
             </div>
 
@@ -465,7 +481,6 @@
                         <input type="text" placeholder="O que está acontecendo no campus?" id="new-post-input" onkeypress="handlePostEnter(event)">
                         <button class="btn" style="width: auto; padding: 10px 25px;" onclick="criarPost()">Postar</button>
                     </div>
-                    <!-- Feed injetado aqui -->
                     <div id="desktop-feed-container" onclick="handleFeedClick(event, false)"></div>
                 </div>
             </div>
@@ -531,7 +546,7 @@
     </div>
 
     <!-- LAYOUT MOBILE -->
-    <div class="mobile-wrapper">
+    <div class="mobile-wrapper" id="mobile-wrapper">
         <div class="dynamic-island"></div>
         
         <!-- ONBOARDING MOBILE -->
@@ -557,7 +572,6 @@
                     </select>
                 </div>
                 <button type="submit" class="btn" style="padding: 15px; margin-top: 15px;">Criar Conta</button>
-                <button type="button" class="btn btn-outline" style="margin-top: 15px; color: white; border-color: white; background: transparent;" onclick="cancelMobileOnboarding()">Voltar para PC</button>
             </form>
         </div>
 
@@ -568,7 +582,7 @@
                 <div class="mobile-header-actions">
                     <button class="mobile-theme-toggle-btn" onclick="toggleDarkMode()" id="theme-toggle-mobile">🌙</button>
                     <button class="mobile-profile-btn" onclick="switchMobileTab('perfil', document.querySelectorAll('.mobile-nav-item')[3])" id="mobile-profile-initial">A</button>
-                    <button class="close-mobile-btn" onclick="tryToggleMobile()">Sair</button>
+                    <button class="close-mobile-btn" onclick="toggleMobileMode()">Sair</button>
                 </div>
             </div>
             <p id="mobile-greeting">Bom dia.</p>
@@ -631,7 +645,6 @@
                     <input type="text" placeholder="Postar algo..." id="new-post-input-mobile" style="padding: 10px 15px; font-size: 0.85rem;" onkeypress="handlePostEnterMobile(event)">
                     <button class="btn" style="width: auto; padding: 10px 15px; font-size: 0.85rem;" onclick="criarPostMobile()">Postar</button>
                 </div>
-                <!-- Feed injetado aqui com Event Delegation -->
                 <div id="mobile-feed-container" onclick="handleFeedClick(event, true)"></div>
             </div>
 
@@ -685,7 +698,7 @@
 
             <!-- CHAT PRIVADO MOBILE -->
             <div id="mobile-chat-modal" class="mobile-chat-modal">
-                <div class="chat-modal-header" style="border-radius: 0; padding: 50px 20px 20px 20px;">
+                <div class="chat-modal-header" style="border-radius: 0; padding: 20px;">
                     <div style="display: flex; align-items: center; gap: 15px;">
                         <button onclick="closeMobileChatModal()" style="background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer;">←</button>
                         <div>
@@ -695,7 +708,7 @@
                     </div>
                 </div>
                 <div class="mobile-chat-messages" id="mobile-chat-messages"></div>
-                <div class="chat-modal-input" style="padding-bottom: 25px;">
+                <div class="chat-modal-input" style="padding-bottom: 20px;">
                     <input type="text" id="mobile-chat-input" placeholder="Digite..." onkeypress="handleMobileChatEnter(event)">
                     <button onclick="sendMobileChatMessage()">➤</button>
                 </div>
@@ -763,7 +776,6 @@
         const cursosList = ["Administração", "Arquitetura e Urbanismo", "Biomedicina", "Direito", "Educação Física", "Enfermagem", "Engenharia Civil", "Farmácia", "Fisioterapia", "Fonoaudiologia", "Medicina", "Medicina Veterinária", "Nutrição", "Odontologia", "Psicologia", "Terapia Ocupacional", "Radiologia", "Análise e Desenvolvimento de Sistemas", "Letras", "Pedagogia", "Outro Curso"];
         
         let isLoggedIn = userProfile ? true : false;
-        let loggedInViaMobile = localStorage.getItem('loginMobile') === 'true';
 
         // --- INICIALIZAÇÃO DO SISTEMA ---
         function initSystem() {
@@ -773,39 +785,19 @@
             renderFeed();
             
             if (isLoggedIn) {
-                document.getElementById('onboarding-screen').style.display = 'none';
-                document.body.classList.remove('onboarding-active');
+                document.body.classList.add('logged-in');
+                document.getElementById('onboarding-screen-pc').style.display = 'none';
                 updateUIWithUserData();
             } else {
-                document.getElementById('onboarding-screen').style.display = 'flex';
-                document.body.classList.add('onboarding-active');
+                document.body.classList.remove('logged-in');
+                document.getElementById('onboarding-screen-pc').style.display = 'flex';
             }
         }
 
         // --- CONTROLE DE ACESSO MOBILE/PC ---
-        function tryToggleMobile() {
-            if (isLoggedIn && !loggedInViaMobile) {
-                alert("Você fez login via PC. Para usar o app no celular, saia da conta e escolha 'Visão Mobile' na tela inicial.");
-                return;
-            }
-            if (isLoggedIn && loggedInViaMobile) {
-                alert("Para voltar à versão PC, você precisa sair da conta no seu Perfil.");
-                return;
-            }
+        function toggleMobileMode() {
             document.body.classList.toggle('mobile-mode');
-            renderFeed(); // Re-renderiza para atualizar os botões baseados no modo
-        }
-
-        function toggleMobileOnboarding() {
-            document.body.classList.add('mobile-mode');
-            document.body.classList.add('onboarding-active');
-            document.getElementById('onboarding-screen').style.display = 'none';
-        }
-
-        function cancelMobileOnboarding() {
-            document.body.classList.remove('mobile-mode');
-            document.body.classList.remove('onboarding-active');
-            document.getElementById('onboarding-screen').style.display = 'flex';
+            renderFeed();
         }
 
         // --- BUSCA DE CURSO ---
@@ -931,7 +923,7 @@
             localStorage.setItem('campusFeed_' + dbVersion, JSON.stringify(feedPosts));
         }
 
-        // O SEGREDO ESTÁ AQUI: Usando data-attributes e delegação de eventos
+        // RENDERIZAÇÃO DO FEED (USANDO DELEGAÇÃO DE EVENTOS)
         function renderFeed() {
             const containers = [document.getElementById('desktop-feed-container'), document.getElementById('mobile-feed-container')];
             let html = '';
@@ -947,7 +939,6 @@
                     });
                 }
 
-                // Atributos data-action, data-id, data-autor e data-curso
                 html += `
                     <div class="post-card">
                         <div class="post-header">
@@ -983,7 +974,6 @@
             containers.forEach(c => { if (c) c.innerHTML = html; });
         }
 
-        // A MÁGICA DA DELEGAÇÃO DE EVENTOS (Funciona no PC e no Mobile sem falhas)
         function handleFeedClick(event, isMobile) {
             const btn = event.target.closest('button');
             if (!btn) return;
@@ -1059,7 +1049,6 @@
                 document.querySelectorAll('.comments-section').forEach(el => el.classList.remove('active'));
                 section.classList.add('active');
                 
-                // Se for mobile, rola até o campo de texto após abrir
                 if (isMobile) {
                     setTimeout(() => {
                         section.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -1080,7 +1069,6 @@
                     localStorage.setItem('campusFeed_' + dbVersion, JSON.stringify(feedPosts));
                     renderFeed();
                     
-                    // Mantém a caixa de comentários aberta após renderizar
                     setTimeout(() => {
                         const section = document.getElementById(`comments-${postId}`);
                         if(section) {
@@ -1097,7 +1085,12 @@
 
         function handlePostEnter(e) { if (e.key === 'Enter') criarPost(); }
         function handlePostEnterMobile(e) { if (e.key === 'Enter') criarPostMobile(); }
-        function handleCommentEnter(e, id) { if (e.key === 'Enter') addComment(id, document.body.classList.contains('mobile-mode')); }
+        function handleCommentEnter(e, id) { 
+            if (e.key === 'Enter') {
+                const isMobile = window.innerWidth <= 768 || document.body.classList.contains('mobile-mode');
+                addComment(id, isMobile); 
+            }
+        }
 
         // --- LOGIN E LOGOUT ---
         document.getElementById('onboarding-form-pc').addEventListener('submit', function(e) {
@@ -1106,10 +1099,10 @@
             if (!curso) return alert("Selecione um curso.");
             userProfile = { nome: document.getElementById('pc-nome').value, curso: curso, periodo: document.getElementById('pc-periodo').value, foto: "" };
             localStorage.setItem('campusUser', JSON.stringify(userProfile));
-            localStorage.setItem('loginMobile', 'false');
-            isLoggedIn = true; loggedInViaMobile = false;
+            isLoggedIn = true;
             
-            document.getElementById('onboarding-screen').style.display = 'none';
+            document.getElementById('onboarding-screen-pc').style.display = 'none';
+            document.body.classList.add('logged-in');
             updateUIWithUserData();
         });
 
@@ -1119,24 +1112,20 @@
             if (!curso) return alert("Selecione um curso.");
             userProfile = { nome: document.getElementById('mobile-nome').value, curso: curso, periodo: document.getElementById('mobile-periodo').value, foto: "" };
             localStorage.setItem('campusUser', JSON.stringify(userProfile));
-            localStorage.setItem('loginMobile', 'true');
-            isLoggedIn = true; loggedInViaMobile = true;
+            isLoggedIn = true;
             
-            document.body.classList.remove('onboarding-active');
-            document.getElementById('onboarding-screen').style.display = 'none';
+            document.body.classList.add('logged-in');
             updateUIWithUserData();
         });
 
         function logout() {
             if(!confirm("Deseja realmente sair da conta?")) return;
             localStorage.removeItem('campusUser');
-            localStorage.removeItem('loginMobile');
-            isLoggedIn = false; loggedInViaMobile = false;
+            isLoggedIn = false;
             userProfile = null;
             
-            document.body.classList.remove('onboarding-active');
-            document.body.classList.remove('mobile-mode'); 
-            document.getElementById('onboarding-screen').style.display = 'flex';
+            document.body.classList.remove('logged-in'); 
+            document.getElementById('onboarding-screen-pc').style.display = 'flex';
             document.getElementById('onboarding-form-pc').reset();
             document.getElementById('onboarding-form-mobile').reset();
             document.getElementById('pc-curso-search').value = '';

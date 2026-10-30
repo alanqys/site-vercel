@@ -885,8 +885,8 @@
         let isLoggedIn = userProfile ? true : false;
         let chatTimer = null; 
         let currentChatContext = null; 
-        let currentChatPerson = null; // Guarda o nome da pessoa com quem se está falando
-        let currentChatCourse = null; // Guarda o curso da pessoa
+        let currentChatPerson = null; 
+        let currentChatCourse = null; 
 
         // --- INICIALIZAÇÃO DO SISTEMA ---
         function initSystem() {
@@ -991,7 +991,7 @@
         }
 
         // --- SISTEMA DE POSTAGENS ---
-        const dbVersion = "v2"; 
+        const dbVersion = "v3"; // Atualizado para v3 para forçar atualização dos perfis
         let feedPosts = JSON.parse(localStorage.getItem('campusFeed_' + dbVersion));
         
         if (!feedPosts) {
@@ -1000,6 +1000,7 @@
                     id: 1, 
                     autor: "Lucas M.", 
                     curso: "Direito", 
+                    periodo: "1º Período",
                     texto: "Alguém do 1º período já chegou? Tô na praça central tomando um ar. Bora estudar!", 
                     tempo: "Há 5 min", 
                     foto: "",
@@ -1011,6 +1012,7 @@
                     id: 2, 
                     autor: "Juliana S.", 
                     curso: "Enfermagem", 
+                    periodo: "3º Período",
                     texto: "A biblioteca tá super vazia hoje, quem quiser um lugar silencioso pra estudar, é uma boa pedida.", 
                     tempo: "Há 15 min", 
                     foto: "",
@@ -1020,6 +1022,7 @@
                     id: 3, 
                     autor: "Carlos", 
                     curso: "Sistemas de Informação", 
+                    periodo: "5º Período",
                     texto: "O ônibus atrasou de novo... chego umas 07:20. Alguém do lab 3?", 
                     tempo: "Há 25 min", 
                     foto: "",
@@ -1051,7 +1054,7 @@
                         <div class="post-actions">
                             ${isMeuPost ? 
                                 `<button class="action-btn delete" data-action="delete" data-id="${post.id}">🗑️ Apagar Postagem</button>` : 
-                                `<button class="action-btn" data-action="chat" data-autor="${post.autor}" data-curso="${post.curso}">✉️ Chamar no Privado</button>`
+                                `<button class="action-btn" data-action="chat" data-autor="${post.autor}" data-curso="${post.curso}" data-periodo="${post.periodo || 'Não informado'}">✉️ Chamar no Privado</button>`
                             }
                         </div>
                     </div>
@@ -1069,12 +1072,13 @@
             const id = btn.getAttribute('data-id');
             const autor = btn.getAttribute('data-autor');
             const curso = btn.getAttribute('data-curso');
+            const periodo = btn.getAttribute('data-periodo');
 
             if (action === 'delete') {
                 deletarPost(id);
             } else if (action === 'chat') {
-                if (isMobile) openMobileChatModal(autor, curso);
-                else openChatModal(autor, curso);
+                if (isMobile) openMobileChatModal(autor, curso, periodo);
+                else openChatModal(autor, curso, periodo);
             }
         }
 
@@ -1086,6 +1090,7 @@
                     id: Date.now(), 
                     autor: userProfile.nome, 
                     curso: userProfile.curso,
+                    periodo: userProfile.periodo,
                     texto: texto, 
                     tempo: "Agora", 
                     foto: userProfile.foto || "",
@@ -1105,6 +1110,7 @@
                     id: Date.now(), 
                     autor: userProfile.nome, 
                     curso: userProfile.curso,
+                    periodo: userProfile.periodo,
                     texto: texto, 
                     tempo: "Agora", 
                     foto: userProfile.foto || "",
@@ -1251,11 +1257,48 @@
                     resposta = "Obrigado por entender. Vamos focar nos estudos então!";
                     currentChatContext = null;
                 } 
-                // Se for uma mensagem nova, define o contexto e responde dinamicamente
+                // 3. RESPOSTAS DIRETAS PARA PERGUNTAS BÁSICAS
+                else if (msg.includes("tudo bem") || msg.includes("tudo bom") || msg.includes("como vai") || msg.includes("td bem") || msg.includes("como você tá")) {
+                    const respostasBemEstar = [
+                        "Tudo ótimo! Só meio cansado(a) com os trabalhos, mas indo bem. E você?",
+                        "Tudo tranquilo! Acabei de sair de uma aula. E aí, como você tá?",
+                        "Tô bem! Na correria do semestre, mas sobrevivendo kkk. E você?"
+                    ];
+                    resposta = respostasBemEstar[Math.floor(Math.random() * respostasBemEstar.length)];
+                }
+                else if (msg.includes("qual seu nome") || msg.includes("como se chama") || msg.includes("seu nome")) {
+                    resposta = `Meu nome é ${currentChatPerson.split(' ')[0]}! Sou do curso de ${currentChatCourse}.`;
+                }
+                else if (msg.includes("qual seu curso") || msg.includes("o que você faz") || msg.includes("qual curso")) {
+                    resposta = `Eu faço ${currentChatCourse} aqui na UNIFIP. E você, faz o que?`;
+                }
+                else if (msg.includes("qual seu periodo") || msg.includes("qual período") || msg.includes("que periodo")) {
+                    // Puxa o período de quem estamos conversando
+                    const pessoaNoFeed = feedPosts.find(p => p.autor === currentChatPerson);
+                    const periodoPessoa = pessoaNoFeed ? pessoaNoFeed.periodo : "algum período";
+                    resposta = `Eu tô no ${periodoPessoa} de ${currentChatCourse}. E você, tá em qual?`;
+                }
+                else if (msg.includes("onde fica") || msg.includes("onde é") || msg.includes("como chego")) {
+                    resposta = "Depende de onde você quer ir! A biblioteca fica no Bloco A, a academia no bloco de esportes. Você tá procurando o que exatamente?";
+                }
+                // 4. SAUDAÇÕES E DESPEDIDAS
                 else if (msg.includes("oi") || msg.includes("olá") || msg.includes("ola") || msg.includes("eae") || msg.includes("e ai") || msg.includes("bom dia") || msg.includes("boa tarde") || msg.includes("boa noite")) {
-                    resposta = `Oii! Tudo bem? Sou ${currentChatPerson}, do curso de ${currentChatCourse}. Vi que você chamou no privado, o que manda?`;
+                    const saudacoes = [
+                        `Oii! Tudo bem? Sou ${currentChatPerson.split(' ')[0]}, do curso de ${currentChatCourse}. O que manda?`,
+                        `Eae! Tudo certo? Sou ${currentChatPerson.split(' ')[0]}, de ${currentChatCourse}. Como posso te ajudar?`,
+                        `Olá! Tudo bem? Vi que você me chamou. O que você precisa?`
+                    ];
+                    resposta = saudacoes[Math.floor(Math.random() * saudacoes.length)];
                     currentChatContext = "greeting";
+                }
+                else if (msg.includes("tchau") || msg.includes("até") || msg.includes("ate") || msg.includes("falou") || msg.includes("flw") || msg.includes("sair")) {
+                    resposta = "Falou! Até mais tarde no campus. Se precisar de algo, só chamar aqui. 👋";
+                    currentChatContext = null;
                 } 
+                else if (msg.includes("obrigado") || msg.includes("obrigada") || msg.includes("valeu") || msg.includes("vlw") || msg.includes("agradeço")) {
+                    resposta = "Imagina! Estamos aqui pra isso. Precisando, tamo aí. 😊";
+                } 
+                // 5. CONTEXTOS ESPECÍFICOS
                 else if (msg.includes("prova") || msg.includes("estudar") || msg.includes("trabalho") || msg.includes("seminário") || msg.includes("nota") || msg.includes("biblioteca")) {
                     const respostasEstudo = [
                         "Nossa, nem me fala em prova! Tô surtando com os trabalhos. Você já começou o seu?",
@@ -1283,19 +1326,7 @@
                     resposta = respostasCampus[Math.floor(Math.random() * respostasCampus.length)];
                     currentChatContext = "campus";
                 } 
-                else if (msg.includes("tchau") || msg.includes("até") || msg.includes("ate") || msg.includes("falou") || msg.includes("flw") || msg.includes("sair")) {
-                    resposta = "Falou! Até mais tarde no campus. Se precisar de algo, só chamar aqui. 👋";
-                    currentChatContext = null;
-                } 
-                else if (msg.includes("obrigado") || msg.includes("obrigada") || msg.includes("valeu") || msg.includes("vlw") || msg.includes("agradeço")) {
-                    resposta = "Imagina! Estamos aqui pra isso. Precisando, tamo aí. 😊";
-                } 
-                else if (msg.includes("nome") || msg.includes("quem é você") || msg.includes("quem e voce") || msg.includes("curso")) {
-                    resposta = `Sou ${currentChatPerson}! Faço ${currentChatCourse} aqui na UNIFIP. Prazer em te conhecer!`;
-                } 
-                else if (msg.includes("ajuda") || msg.includes("socorro") || msg.includes("perdido") || msg.includes("onde fica")) {
-                    resposta = "Posso tentar te ajudar! Você tá procurando algum lugar específico no campus?";
-                } 
+                // 6. FALLBACK
                 else if (msg.includes("?") || msg.includes("como") || msg.includes("por que") || msg.includes("onde") || msg.includes("quando")) {
                     const respostasGenericas = [
                         "Hmm, boa pergunta! Acho que depende muito do contexto. O que você acha?",
@@ -1316,7 +1347,7 @@
                 }
             }
 
-            // 3. DIGITAÇÃO E ENVIO
+            // 7. DIGITAÇÃO E ENVIO
             const typingId = 'typing-' + Date.now();
             containerMessages.innerHTML += `<div class="message other" id="${typingId}" style="opacity: 0.6; font-style: italic;">digitando...</div>`;
             containerMessages.scrollTop = containerMessages.scrollHeight;
@@ -1331,18 +1362,15 @@
         }
 
         // --- CHAT PRIVADO (DESKTOP) ---
-        function openChatModal(nome, curso) {
+        function openChatModal(nome, curso, periodo) {
             if(nome === userProfile.nome) return alert("Você não pode conversar consigo mesmo.");
             
-            // Salva quem é a pessoa no contexto global
             currentChatPerson = nome;
             currentChatCourse = curso;
             currentChatContext = "greeting";
 
             document.getElementById('chat-name').innerText = nome;
             document.getElementById('chat-course').innerText = curso;
-            
-            // Mensagem inicial dinâmica
             document.getElementById('chat-messages-container').innerHTML = `<div class="message other">Oi! Tudo bem? Vi que você me chamou. 😊</div>`;
             
             document.getElementById('chat-modal').classList.add('active');
@@ -1362,18 +1390,15 @@
         function handleChatEnter(e) { if (e.key === 'Enter') sendChatMessage(); }
 
         // --- CHAT PRIVADO (MOBILE) ---
-        function openMobileChatModal(nome, curso) {
+        function openMobileChatModal(nome, curso, periodo) {
             if(nome === userProfile.nome) return alert("Você não pode conversar consigo mesmo.");
             
-            // Salva quem é a pessoa no contexto global
             currentChatPerson = nome;
             currentChatCourse = curso;
             currentChatContext = "greeting";
 
             document.getElementById('mobile-chat-name').innerText = nome;
             document.getElementById('mobile-chat-course').innerText = curso;
-            
-            // Mensagem inicial dinâmica
             document.getElementById('mobile-chat-messages').innerHTML = `<div class="message other">Oi! Tudo bem? Vi que você me chamou. 😊</div>`;
             
             document.body.classList.add('chat-open'); 

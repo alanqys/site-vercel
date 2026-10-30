@@ -884,7 +884,9 @@
         
         let isLoggedIn = userProfile ? true : false;
         let chatTimer = null; 
-        let currentChatContext = null; // Variável que vai guardar o "assunto" atual da conversa
+        let currentChatContext = null; 
+        let currentChatPerson = null; // Guarda o nome da pessoa com quem se está falando
+        let currentChatCourse = null; // Guarda o curso da pessoa
 
         // --- INICIALIZAÇÃO DO SISTEMA ---
         function initSystem() {
@@ -1214,9 +1216,9 @@
         }
 
         // =========================================
-        // ROBÔ INTELIGENTE COM FILTRO E CONTEXTO
+        // ROBÔ INTELIGENTE COM FILTRO E CONTEXTO DINÂMICO
         // =========================================
-        function julianaResponder(msgUsuario, containerMessages) {
+        function botResponder(msgUsuario, containerMessages) {
             const msg = msgUsuario.toLowerCase().trim();
             let resposta = "";
 
@@ -1225,41 +1227,40 @@
                 "idiota", "burra", "otaria", "otária", "chata", "chato", "feia", "feio", 
                 "gorda", "gordo", "imbecil", "estupida", "estúpida", "babaca", "fdp", 
                 "puta", "vagabunda", "vadia", "retardada", "nazi", "racista", "preconceituoso",
-                "merda", "bosta", "porra", "caralho", "foder", "fuder", "puta", "corno"
+                "merda", "bosta", "porra", "caralho", "foder", "fuder", "corno"
             ];
             
             const temPalavrao = palavrasProibidas.some(p => msg.includes(p));
 
             if (temPalavrao) {
                 resposta = "Por favor, mantenha o respeito na conversa. Estamos em um ambiente acadêmico. Se continuar, vou precisar encerrar o chat.";
-                currentChatContext = "warned"; // Marca que ela já avisou
+                currentChatContext = "warned"; 
             } 
             // 2. LÓGICA INTELIGENTE COM MEMÓRIA DE CONTEXTO
             else {
-                // Se a mensagem for apenas "sim", "ok", "entendi", ela usa o contexto anterior
                 const respostasCurtas = ["sim", "ok", "entendi", "legal", "blz", "beleza", "vdd", "aham"];
                 const ehRespostaCurta = respostasCurtas.includes(msg);
 
                 if (ehRespostaCurta && currentChatContext === "exams") {
-                    resposta = "Então, vamos marcar de estudar juntas na biblioteca amanhã? Levo meus resumos de Enfermagem!";
+                    resposta = "Então, vamos marcar de estudar juntos na biblioteca amanhã? Levo meus resumos!";
                 } else if (ehRespostaCurta && currentChatContext === "food") {
                     resposta = "Aí sim! Se for no Shortbread, me chama que eu amo o cookie de chocolate de lá.";
                 } else if (ehRespostaCurta && currentChatContext === "campus") {
                     resposta = "Pois é! E o pior é que a fila do RU fica gigante nesse horário.";
                 } else if (ehRespostaCurta && currentChatContext === "warned") {
-                    resposta = "Obrigada por entender. Vamos focar nos estudos então!";
+                    resposta = "Obrigado por entender. Vamos focar nos estudos então!";
                     currentChatContext = null;
                 } 
-                // Se for uma mensagem nova, define o contexto e responde
+                // Se for uma mensagem nova, define o contexto e responde dinamicamente
                 else if (msg.includes("oi") || msg.includes("olá") || msg.includes("ola") || msg.includes("eae") || msg.includes("e ai") || msg.includes("bom dia") || msg.includes("boa tarde") || msg.includes("boa noite")) {
-                    resposta = "Oii! Tudo bem? Sou a Juliana, do 3º período de Enfermagem. Vi que você chamou no privado, o que manda?";
+                    resposta = `Oii! Tudo bem? Sou ${currentChatPerson}, do curso de ${currentChatCourse}. Vi que você chamou no privado, o que manda?`;
                     currentChatContext = "greeting";
                 } 
                 else if (msg.includes("prova") || msg.includes("estudar") || msg.includes("trabalho") || msg.includes("seminário") || msg.includes("nota") || msg.includes("biblioteca")) {
                     const respostasEstudo = [
-                        "Nossa, nem me fala em prova! Tô surtando com o seminário de Saúde Pública. Você já começou o seu?",
+                        "Nossa, nem me fala em prova! Tô surtando com os trabalhos. Você já começou o seu?",
                         "A biblioteca tá sendo meu segundo lar essa semana kkk. Qual matéria você tá estudando?",
-                        "Eu tô indo pra biblioteca daqui a pouco! Se quiser, podemos estudar juntas e trocar resumos."
+                        "Eu tô indo pra biblioteca daqui a pouco! Se quiser, podemos estudar juntos e trocar resumos."
                     ];
                     resposta = respostasEstudo[Math.floor(Math.random() * respostasEstudo.length)];
                     currentChatContext = "exams";
@@ -1290,12 +1291,11 @@
                     resposta = "Imagina! Estamos aqui pra isso. Precisando, tamo aí. 😊";
                 } 
                 else if (msg.includes("nome") || msg.includes("quem é você") || msg.includes("quem e voce") || msg.includes("curso")) {
-                    resposta = "Sou a Juliana! Faço Enfermagem aqui na UNIFIP. Prazer em te conhecer!";
+                    resposta = `Sou ${currentChatPerson}! Faço ${currentChatCourse} aqui na UNIFIP. Prazer em te conhecer!`;
                 } 
                 else if (msg.includes("ajuda") || msg.includes("socorro") || msg.includes("perdido") || msg.includes("onde fica")) {
                     resposta = "Posso tentar te ajudar! Você tá procurando algum lugar específico no campus?";
                 } 
-                // Respostas para perguntas genéricas (O que, Como, Por que)
                 else if (msg.includes("?") || msg.includes("como") || msg.includes("por que") || msg.includes("onde") || msg.includes("quando")) {
                     const respostasGenericas = [
                         "Hmm, boa pergunta! Acho que depende muito do contexto. O que você acha?",
@@ -1305,7 +1305,6 @@
                     resposta = respostasGenericas[Math.floor(Math.random() * respostasGenericas.length)];
                 } 
                 else {
-                    // Fallback Inteligente
                     const neutras = [
                         "Entendi! E como você tá se sentindo com o semestre até agora?",
                         "Legal! Eu tava justamente pensando nisso hoje mais cedo.",
@@ -1334,15 +1333,18 @@
         // --- CHAT PRIVADO (DESKTOP) ---
         function openChatModal(nome, curso) {
             if(nome === userProfile.nome) return alert("Você não pode conversar consigo mesmo.");
+            
+            // Salva quem é a pessoa no contexto global
+            currentChatPerson = nome;
+            currentChatCourse = curso;
+            currentChatContext = "greeting";
+
             document.getElementById('chat-name').innerText = nome;
             document.getElementById('chat-course').innerText = curso;
-            // Mensagem inicial personalizada dependendo de quem é
-            if(nome === "Juliana S.") {
-                document.getElementById('chat-messages-container').innerHTML = `<div class="message other">Oi! Vi seu post no mural. Tudo bem? 😊</div>`;
-                currentChatContext = "greeting";
-            } else {
-                document.getElementById('chat-messages-container').innerHTML = `<div class="message other">Oi! Tudo bem? Vi que você me chamou.</div>`;
-            }
+            
+            // Mensagem inicial dinâmica
+            document.getElementById('chat-messages-container').innerHTML = `<div class="message other">Oi! Tudo bem? Vi que você me chamou. 😊</div>`;
+            
             document.getElementById('chat-modal').classList.add('active');
         }
         function closeChatModal() { document.getElementById('chat-modal').classList.remove('active'); }
@@ -1354,7 +1356,7 @@
                 c.innerHTML += `<div class="message me">${msg}</div>`;
                 input.value = ''; 
                 c.scrollTop = c.scrollHeight;
-                julianaResponder(msg, c);
+                botResponder(msg, c);
             }
         }
         function handleChatEnter(e) { if (e.key === 'Enter') sendChatMessage(); }
@@ -1362,15 +1364,17 @@
         // --- CHAT PRIVADO (MOBILE) ---
         function openMobileChatModal(nome, curso) {
             if(nome === userProfile.nome) return alert("Você não pode conversar consigo mesmo.");
+            
+            // Salva quem é a pessoa no contexto global
+            currentChatPerson = nome;
+            currentChatCourse = curso;
+            currentChatContext = "greeting";
+
             document.getElementById('mobile-chat-name').innerText = nome;
             document.getElementById('mobile-chat-course').innerText = curso;
             
-            if(nome === "Juliana S.") {
-                document.getElementById('mobile-chat-messages').innerHTML = `<div class="message other">Oi! Vi seu post no mural. Tudo bem? 😊</div>`;
-                currentChatContext = "greeting";
-            } else {
-                document.getElementById('mobile-chat-messages').innerHTML = `<div class="message other">Oi! Tudo bem? Vi que você me chamou.</div>`;
-            }
+            // Mensagem inicial dinâmica
+            document.getElementById('mobile-chat-messages').innerHTML = `<div class="message other">Oi! Tudo bem? Vi que você me chamou. 😊</div>`;
             
             document.body.classList.add('chat-open'); 
             document.getElementById('mobile-chat-modal').classList.add('active');
@@ -1388,7 +1392,7 @@
                 c.innerHTML += `<div class="message me">${msg}</div>`;
                 input.value = ''; 
                 c.scrollTop = c.scrollHeight;
-                julianaResponder(msg, c);
+                botResponder(msg, c);
             }
         }
         function handleMobileChatEnter(e) { if (e.key === 'Enter') sendMobileChatMessage(); }
